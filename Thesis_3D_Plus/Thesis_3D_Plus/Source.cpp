@@ -56,7 +56,7 @@ int main()
 		glClear(GL_COLOR_BUFFER_BIT);
 		glfwSwapBuffers(window);
 	}
-	RenderObject _object = RenderObject(CreateSolidCube(0.5, 0.0, 2.0, 0.0));
+	RenderObject _object = RenderObject(CreateSolidCube(0.5, 0.0, 2.0, 0.0), new GLint[4]{240 ,128 ,128, 255}, new GLint[4]{ 240 ,128 ,128, 255 });
 	glfwTerminate();
 
 	return 0;

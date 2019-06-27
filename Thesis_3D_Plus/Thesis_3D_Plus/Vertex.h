@@ -1,4 +1,5 @@
 #pragma once
+#include <vector>
 #include <GL/glew.h>
 #include <GLFW\glfw3.h>
 #include <GLFW\glfw3native.h>
@@ -25,10 +26,10 @@ struct Vertex
 	}
 	
 };
-static Vertex* CreateSolidCube(float side, float shift_lr, float shift_y, float shift_ud)
+static std::vector<Vertex> CreateSolidCube(float side, float shift_lr, float shift_y, float shift_ud)
 {
 	side = (float)side / 2;
-	Vertex vertices[] =
+	std::vector<Vertex> vertices = 
 	{
 		//координаты для треуголника, нормаль, текстурные координаты
 		//на каждый куб по 12 треугольников(36 точек)
