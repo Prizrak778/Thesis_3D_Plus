@@ -1,5 +1,8 @@
 #pragma once
 #include "Vertex.h"
+#include <iostream>
+#include <iterator>
+#include <algorithm>
 #include <vector>
 #include <GL/glew.h>
 #include <GLFW\glfw3.h>
@@ -12,10 +15,10 @@ private:
 	 GLuint _vertexArray;
 	 GLuint _buffer; //Буффер в котором хранится объект
 	 int _verticeCount;
-	 GLint color_obj[4] = { 0, 0, 0, 0 };
-	 GLint color_choice[4] = { 0, 0, 0, 0 };
 	 GLint polygonmode = GL_LINE;
 public:
+	GLint color_obj[4] = { 0, 0, 0, 0 };
+	GLint color_choice[4] = { 0, 0, 0, 0 };
 	RenderObject(std::vector<Vertex> vertices, GLint *color, GLint *color_choice);//сделать указатели структурой и сделать указатель на структуру и конст
 	~RenderObject();
 	void Bind();

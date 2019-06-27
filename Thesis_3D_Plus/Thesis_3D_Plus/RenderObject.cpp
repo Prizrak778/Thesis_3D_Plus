@@ -2,7 +2,7 @@
 
 
 
-RenderObject::RenderObject(std::vector<Vertex> vertices, GLint *color, GLint *color_choice)
+RenderObject::RenderObject(std::vector<Vertex> vertices, GLint *color, GLint *color_c)
 {
 	_verticeCount = vertices.size();
 	glGenVertexArrays(1, &_vertexArray);
@@ -24,6 +24,8 @@ RenderObject::RenderObject(std::vector<Vertex> vertices, GLint *color, GLint *co
 	glVertexArrayAttribFormat(_vertexArray, 3, 4, GL_FLOAT, false, 32);
 	_initialized = true;
 	glVertexArrayVertexBuffer(_vertexArray, 0, _buffer, NULL, vertices[0].Size);
+	std::copy(color, color + 4, color_obj);
+	std::copy(color_c, color_c + 4, color_choice);
 }
 
 void RenderObject::Bind()//Сохранение буфера для дальнейшей отрисовки
