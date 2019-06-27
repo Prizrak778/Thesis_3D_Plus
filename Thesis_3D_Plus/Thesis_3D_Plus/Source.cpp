@@ -1,7 +1,11 @@
 #include <iostream>
+#include "Vertex.h"
+#include "RenderObject.h"
 #include <GL/glew.h>
 #include <GLFW\glfw3.h>
 #include <GLFW\glfw3native.h>
+
+
 
 void key_callback(GLFWwindow* window, int key, int scancode, int action, int mode)
 {
@@ -52,6 +56,7 @@ int main()
 		glClear(GL_COLOR_BUFFER_BIT);
 		glfwSwapBuffers(window);
 	}
+	RenderObject _object = RenderObject(CreateSolidCube(0.5, 0.0, 2.0, 0.0));
 	glfwTerminate();
 
 	return 0;
