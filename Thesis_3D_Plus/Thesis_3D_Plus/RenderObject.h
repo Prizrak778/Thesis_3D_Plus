@@ -12,11 +12,11 @@ private:
 	 GLuint _vertexArray;
 	 GLuint _buffer; //Буффер в котором хранится объект
 	 int _verticeCount;
-	 GLint color_obj[4] = { 0, 0, 0, 0, };
-	 GLint color_choice[4] = { 0, 0, 0, 0, };
+	 GLint color_obj[4] = { 0, 0, 0, 0 };
+	 GLint color_choice[4] = { 0, 0, 0, 0 };
 	 GLint polygonmode = GL_LINE;
 public:
-	RenderObject(std::vector<Vertex> vertices, GLint *color, GLint *color_choice);
+	RenderObject(std::vector<Vertex> vertices, GLint *color, GLint *color_choice);//сделать указатели структурой и сделать указатель на структуру и конст
 	~RenderObject();
 };
 

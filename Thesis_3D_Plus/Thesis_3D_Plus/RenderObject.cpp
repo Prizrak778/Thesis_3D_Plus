@@ -29,4 +29,7 @@ RenderObject::RenderObject(std::vector<Vertex> vertices, GLint *color, GLint *co
 
 RenderObject::~RenderObject()
 {
+	_initialized = false;
+	glDeleteVertexArrays(1, &_vertexArray);
+	glDeleteBuffers(1, &_buffer);
 }
