@@ -26,6 +26,15 @@ RenderObject::RenderObject(std::vector<Vertex> vertices, GLint *color, GLint *co
 	glVertexArrayVertexBuffer(_vertexArray, 0, _buffer, NULL, vertices[0].Size);
 }
 
+void RenderObject::Bind()//Сохранение буфера для дальнейшей отрисовки
+{
+	glBindVertexArray(_vertexArray);
+}
+
+void RenderObject::Render()
+{
+	glDrawArrays(GL_TRIANGLES, 0, _verticeCount);
+}
 
 RenderObject::~RenderObject()
 {

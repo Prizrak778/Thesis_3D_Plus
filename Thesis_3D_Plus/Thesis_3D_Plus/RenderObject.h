@@ -18,5 +18,8 @@ private:
 public:
 	RenderObject(std::vector<Vertex> vertices, GLint *color, GLint *color_choice);//сделать указатели структурой и сделать указатель на структуру и конст
 	~RenderObject();
+	void Bind();
+	void Render();
+
 };
 
