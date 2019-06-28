@@ -74,9 +74,9 @@
     <IncludePath>C:\Users\Владимир\Source\Repos\Thesis_3D_Plus\Thesis_3D_Plus\include;$(IncludePath)</IncludePath>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">
-    <IncludePath>C:\Users\Владимир\Source\Repos\Thesis_3D_Plus\Thesis_3D_Plus\include;$(IncludePath)</IncludePath>
-    <LibraryPath>C:\Users\Владимир\Source\Repos\Thesis_3D_Plus\Thesis_3D_Plus\dll;C:\Users\Владимир\Source\Repos\Thesis_3D_Plus\Thesis_3D_Plus\lib;$(LibraryPath)</LibraryPath>
-    <ExecutablePath>C:\Users\Владимир\Source\Repos\Thesis_3D_Plus\Thesis_3D_Plus\dll;$(ExecutablePath)</ExecutablePath>
+    <IncludePath>..\Thesis_3D_Plus\include;$(IncludePath)</IncludePath>
+    <LibraryPath>..\Thesis_3D_Plus\lib;$(LibraryPath)</LibraryPath>
+    <ExecutablePath>..\Thesis_3D_Plus\dll;$(ExecutablePath)</ExecutablePath>
   </PropertyGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">
     <ClCompile>
