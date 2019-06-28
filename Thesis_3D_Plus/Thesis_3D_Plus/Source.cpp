@@ -6,9 +6,11 @@
 #include <GL/glew.h>
 #include <GLFW\glfw3.h>
 #include <GLFW\glfw3native.h>
+#include <glm\vec4.hpp>
 
 std::vector<RenderObject> _renderObjects;
 int _program_contour, _program;
+glm::vec4 test;
 
 void key_callback(GLFWwindow* window, int key, int scancode, int action, int mode)
 {
@@ -149,9 +151,9 @@ int init(GLFWwindow** window)
 	glViewport(0, 0, width, height);
 
 	_renderObjects.push_back(RenderObject(CreateSolidCube(0.5, 0.0, 2.0, 0.0), new GLint[4]{ 240 ,128 ,128, 255 }, new GLint[4]{ 240 ,128 ,128, 255 }));
-	for (int i = 0; i < 10; i++)
+	for (int i = 0; i < 20; i++)
 	{
-		_renderObjects.push_back(RenderObject(CreateSolidCube(0.5f, 1, 2.0f - (float)i, 0.0f), new GLint[4]{ 240 ,128 ,128, 255 }, new GLint[4]{ 240 ,128 ,128, 255 }));
+		_renderObjects.push_back(RenderObject(CreateSolidCube(0.5f, 1, 12.0f - (float)i, 0.0f), new GLint[4]{ 240 ,128 ,128, 255 }, new GLint[4]{ 240 ,128 ,128, 255 }));
 	}
 }
 
@@ -173,6 +175,7 @@ int main()
 			Render_figure(_renderObjects[i], GL_FILL);
 			const GLint* color = { _renderObjects[i].color_obj };
 			glUniform4iv(19, 4, color);
+			_renderObjects[i].Render();
 		}
 		glfwSwapBuffers(window);
 	}
