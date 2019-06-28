@@ -23,6 +23,7 @@ public:
 	~RenderObject();
 	void Bind();
 	void Render();
+	void PolygonMode_now(GLint polygon);
 
 };
 

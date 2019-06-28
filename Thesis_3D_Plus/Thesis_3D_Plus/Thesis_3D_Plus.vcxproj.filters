@@ -13,6 +13,12 @@
       <UniqueIdentifier>{67DA6AB6-F800-4c08-8B7A-83BB121AAD01}</UniqueIdentifier>
       <Extensions>rc;ico;cur;bmp;dlg;rc2;rct;bin;rgs;gif;jpg;jpeg;jpe;resx;tiff;tif;png;wav;mfcribbon-ms</Extensions>
     </Filter>
+    <Filter Include="Components">
+      <UniqueIdentifier>{cd9da428-6d04-42c5-93ba-7b5f34401565}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Components\Shaders">
+      <UniqueIdentifier>{7e19bca4-2b90-4fcc-9da8-87d850a57061}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="RenderObject.cpp">
@@ -29,5 +35,16 @@
     <ClInclude Include="Vertex.h">
       <Filter>Файлы заголовков</Filter>
     </ClInclude>
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="Components\Shaders\fragmentShader.frag">
+      <Filter>Components\Shaders</Filter>
+    </None>
+    <None Include="Components\Shaders\vertexShader.vert">
+      <Filter>Components\Shaders</Filter>
+    </None>
+    <None Include="Components\Shaders\vertexShader_c.vert">
+      <Filter>Components\Shaders</Filter>
+    </None>
   </ItemGroup>
 </Project>

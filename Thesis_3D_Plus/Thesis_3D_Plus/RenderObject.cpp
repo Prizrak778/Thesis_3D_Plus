@@ -33,6 +33,12 @@ void RenderObject::Bind()//Сохранение буфера для дальнейшей отрисовки
 	glBindVertexArray(_vertexArray);
 }
 
+void RenderObject::PolygonMode_now(GLint polygon)//тип полигона для отрисовки(Fill, Line, Point)
+{
+	polygonmode = polygon;
+	glPolygonMode(GL_FRONT_AND_BACK, polygon);
+}
+
 void RenderObject::Render()
 {
 	glDrawArrays(GL_TRIANGLES, 0, _verticeCount);

@@ -136,6 +136,11 @@
     <ClInclude Include="Vertex.h" />
     <ClInclude Include="RenderObject.h" />
   </ItemGroup>
+  <ItemGroup>
+    <None Include="Components\Shaders\fragmentShader.frag" />
+    <None Include="Components\Shaders\vertexShader.vert" />
+    <None Include="Components\Shaders\vertexShader_c.vert" />
+  </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets" />
 </Project>
