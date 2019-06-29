@@ -1,4 +1,4 @@
-﻿#version 450 core
+#version 450 core
 
 layout (location = 1) in vec4 vec_position;
 layout (location = 2) in vec4 vec_normal;

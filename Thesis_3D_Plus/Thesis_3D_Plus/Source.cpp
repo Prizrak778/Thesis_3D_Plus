@@ -1,7 +1,9 @@
 #define _USE_MATH_DEFINES
 #include <cmath>
 #include <iostream>
+#include <sstream>
 #include <string>
+#include <cstring>
 #include <fstream>
 #include "Vertex.h"
 #include "RenderObject.h"
@@ -75,14 +77,14 @@ GLuint CompileShaders(std::string VertexString, std::string FragmentString, std:
 {
 	GLuint vertexShader = glCreateShader(GL_VERTEX_SHADER);
 	std::string str;
-	std::ifstream file(VertexString, std::ios::in);
+	std::ifstream file(VertexString);
 	if (file.is_open())
 	{
-		std::copy(
-			std::istream_iterator<char>(file),
-			std::istream_iterator<char>(),
-			std::insert_iterator<std::string>(str, str.begin()));//исправить чтение из файла
-		const GLchar* textshader = (const GLchar*)str.c_str();
+		std::stringstream str_stream;
+		str_stream << file.rdbuf();
+		char* textshader = new char[1+str_stream.str().size()];
+		strcpy_s(textshader, 1+str_stream.str().size(), str_stream.str().c_str());
+		std::cout << str_stream.str().c_str();
 		glShaderSource(vertexShader, 1, &textshader, 0);
 		glCompileShader(vertexShader);
 		file.close();
@@ -96,14 +98,14 @@ GLuint CompileShaders(std::string VertexString, std::string FragmentString, std:
 	if (GeometricString != "")
 	{
 		file.open(GeometricString, std::ios::in);
-		if (file.is_open())
+		if (!file && file.is_open())
 		{
 			geometryShader = glCreateShader(GL_GEOMETRY_SHADER);
-			std::copy(
-				std::istream_iterator<char>(file),
-				std::istream_iterator<char>(),
-				std::insert_iterator<std::string>(str, str.begin()));
-			const GLchar* textshader = (const GLchar*)str.c_str();
+			std::stringstream str_stream;
+			str_stream << file.rdbuf();
+			char* textshader = new char[1 + str_stream.str().size()];
+			strcpy_s(textshader, 1 + str_stream.str().size(), str_stream.str().c_str());
+			std::cout << textshader;
 			glShaderSource(geometryShader, 1, &textshader, 0);
 			glCompileShader(geometryShader);
 			file.close();
@@ -113,11 +115,11 @@ GLuint CompileShaders(std::string VertexString, std::string FragmentString, std:
 	GLuint fragmentShader = glCreateShader(GL_FRAGMENT_SHADER);
 	if (file.is_open())
 	{
-		std::copy(
-			std::istream_iterator<char>(file),
-			std::istream_iterator<char>(),
-			std::insert_iterator<std::string>(str, str.begin()));
-		const GLchar* textshader = (const GLchar*)str.c_str();
+		std::stringstream str_stream;
+		str_stream << file.rdbuf();
+		char* textshader = new char[1 + str_stream.str().size()];
+		strcpy_s(textshader, 1 + str_stream.str().size(), str_stream.str().c_str());
+		std::cout << textshader;
 		glShaderSource(fragmentShader, 1, &textshader, 0);
 		glCompileShader(fragmentShader);
 		file.close();
@@ -179,8 +181,8 @@ int init(GLFWwindow** window)
 		return -1;
 	}
 	CreateProjection();
-	std::string VertexShader = "Components\\Shaders\\vertexShader_c.vert";
-	std::string FragentShader = "Components\\Shaders\\fragmentShader.frag";
+	std::string VertexShader = ".\\Components\\Shaders\\vertexShader_c.vert";
+	std::string FragentShader = ".\\Components\\Shaders\\fragmentShader.frag";
 	if (_program_contour = _program = CompileShaders(VertexShader, FragentShader) == -1)
 	{
 		return -1;
