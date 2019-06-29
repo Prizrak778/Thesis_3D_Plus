@@ -1,16 +1,28 @@
+#define _USE_MATH_DEFINES
+#include <cmath>
 #include <iostream>
 #include <string>
 #include <fstream>
 #include "Vertex.h"
 #include "RenderObject.h"
+#include "Camera.h"
 #include <GL/glew.h>
 #include <GLFW\glfw3.h>
 #include <GLFW\glfw3native.h>
+#include <glm\vec2.hpp>
 #include <glm\vec4.hpp>
+#include <glm/glm.hpp>
+#include <glm/gtc/type_ptr.hpp>
 
 std::vector<RenderObject> _renderObjects;
 int _program_contour, _program;
-glm::vec4 test;
+Camera camera1 = Camera();
+int width, height;
+glm::mat4x4 _projectionMatrix;
+glm::mat4x4 _modelView;
+glm::mat4x4 _view;
+glm::vec2 lastMousePos = glm::vec2(30.0f, 140.0f);
+float angle = 90.0f;
 
 void key_callback(GLFWwindow* window, int key, int scancode, int action, int mode)
 {
@@ -22,11 +34,40 @@ void key_callback(GLFWwindow* window, int key, int scancode, int action, int mod
 	}
 }
 
+void CreateProjection()
+{
+	float aspectRatio = (float)width / height;
+	_projectionMatrix = glm::tweakedInfinitePerspective(angle * (float)M_PI / 180.0f, aspectRatio, 0.01f);
+	_modelView = camera1.GetViewMatrix();
+	_view = _modelView * _projectionMatrix;
+}
+
+void framebuffer_size_callback(GLFWwindow* window, int width, int height)
+{
+	CreateProjection();
+
+	glLoadIdentity();
+	// make sure the viewport matches the new window dimensions; note that width and 
+	// height will be significantly larger than specified on retina displays.
+	glViewport(0, 0, width, height);
+	glUniformMatrix4fv(21, 1, false, glm::value_ptr(_projectionMatrix));
+	std::string title = "Thesis_3D_Plus " + std::to_string(width) + "x" + std::to_string(height);
+	glfwSetWindowTitle(window, title.c_str());
+	// Re-render the scene because the current frame was drawn for the old resolution
+}
+
+void mouse_move_callback(GLFWwindow* window, double xpos, double ypos)
+{
+	glm::vec2 delta = lastMousePos - glm::vec2(xpos, ypos);
+	camera1.AddRotation(delta.x, delta.y);
+	lastMousePos = glm::vec2(xpos, ypos);
+}
+
 void Render_figure(RenderObject renderObject, GLint polygonMode)
 {
 	renderObject.Bind();
-	//glUniformMatrix4fv(20, false, _view);
-	//glUniformMatrix4fv(22, false, _Modelview);
+	glUniformMatrix4fv(20, 1, false, glm::value_ptr(_view));
+	glUniformMatrix4fv(22, 1, false, glm::value_ptr(_modelView));
 	renderObject.PolygonMode_now(polygonMode);
 }
 
@@ -40,7 +81,7 @@ GLuint CompileShaders(std::string VertexString, std::string FragmentString, std:
 		std::copy(
 			std::istream_iterator<char>(file),
 			std::istream_iterator<char>(),
-			std::insert_iterator<std::string>(str, str.begin()));
+			std::insert_iterator<std::string>(str, str.begin()));//исправить чтение из файла
 		const GLchar* textshader = (const GLchar*)str.c_str();
 		glShaderSource(vertexShader, 1, &textshader, 0);
 		glCompileShader(vertexShader);
@@ -121,7 +162,7 @@ int init(GLFWwindow** window)
 	//Выключение возможности изменения размера окна
 	glfwWindowHint(GLFW_RESIZABLE, GL_TRUE);
 
-	*window = glfwCreateWindow(800, 600, "LearnOpenGL", nullptr, nullptr);
+	*window = glfwCreateWindow(800, 600, "Thesis_3D_Plus", nullptr, nullptr);
 	if (*window == nullptr)
 	{
 		std::cout << "Failed to create GLFW window" << std::endl;
@@ -137,15 +178,15 @@ int init(GLFWwindow** window)
 		std::cout << "Failed to initialize GLEW" << std::endl;
 		return -1;
 	}
-
+	CreateProjection();
 	std::string VertexShader = "Components\\Shaders\\vertexShader_c.vert";
 	std::string FragentShader = "Components\\Shaders\\fragmentShader.frag";
 	if (_program_contour = _program = CompileShaders(VertexShader, FragentShader) == -1)
 	{
 		return -1;
 	}
-
-	int width, height;
+	glfwSetCursorPosCallback(*window, mouse_move_callback);
+	glfwSetFramebufferSizeCallback(*window, framebuffer_size_callback);
 	glfwGetFramebufferSize(*window, &width, &height);
 	glfwSetKeyCallback(*window, key_callback);
 	glViewport(0, 0, width, height);
@@ -170,6 +211,7 @@ int main()
 		glClearColor(0.3f, 0.3f, 0.3f, 1.0f);
 		glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
 		glUseProgram(_program);
+		CreateProjection();
 		for(int i = 0; i < _renderObjects.size(); i++)
 		{
 			Render_figure(_renderObjects[i], GL_FILL);
