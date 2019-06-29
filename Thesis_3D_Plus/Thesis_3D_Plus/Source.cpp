@@ -39,7 +39,7 @@ void key_callback(GLFWwindow* window, int key, int scancode, int action, int mod
 void CreateProjection()
 {
 	float aspectRatio = (float)width / height;
-	_projectionMatrix = glm::tweakedInfinitePerspective(angle * (float)M_PI / 180.0f, aspectRatio, 0.01f);
+	_projectionMatrix = glm::perspective(angle * (float)M_PI / 180.0f, aspectRatio, 0.01f, 40.0f);
 	_modelView = camera1.GetViewMatrix();
 	_view = _modelView * _projectionMatrix;
 }
@@ -52,7 +52,7 @@ void framebuffer_size_callback(GLFWwindow* window, int width, int height)
 	// make sure the viewport matches the new window dimensions; note that width and 
 	// height will be significantly larger than specified on retina displays.
 	glViewport(0, 0, width, height);
-	glUniformMatrix4fv(21, 1, false, glm::value_ptr(_projectionMatrix));
+	glUniformMatrix4fv(21, 16, false, glm::value_ptr(_projectionMatrix));
 	std::string title = "Thesis_3D_Plus " + std::to_string(width) + "x" + std::to_string(height);
 	glfwSetWindowTitle(window, title.c_str());
 	// Re-render the scene because the current frame was drawn for the old resolution
@@ -68,8 +68,8 @@ void mouse_move_callback(GLFWwindow* window, double xpos, double ypos)
 void Render_figure(RenderObject renderObject, GLint polygonMode)
 {
 	renderObject.Bind();
-	glUniformMatrix4fv(20, 1, false, glm::value_ptr(_view));
-	glUniformMatrix4fv(22, 1, false, glm::value_ptr(_modelView));
+	glUniformMatrix4fv(20, 16, false, glm::value_ptr(_view));
+	glUniformMatrix4fv(22, 16, false, glm::value_ptr(_modelView));
 	renderObject.PolygonMode_now(polygonMode);
 }
 
@@ -84,7 +84,7 @@ GLuint CompileShaders(std::string VertexString, std::string FragmentString, std:
 		str_stream << file.rdbuf();
 		char* textshader = new char[1+str_stream.str().size()];
 		strcpy_s(textshader, 1+str_stream.str().size(), str_stream.str().c_str());
-		std::cout << str_stream.str().c_str();
+		std::cout << str_stream.str().c_str() << std::endl;
 		glShaderSource(vertexShader, 1, &textshader, 0);
 		glCompileShader(vertexShader);
 		file.close();
@@ -93,7 +93,16 @@ GLuint CompileShaders(std::string VertexString, std::string FragmentString, std:
 	{
 		return -1;
 	}
-	
+	GLint Result = GL_FALSE;
+	int InfoLogLength;
+	glGetShaderiv(vertexShader, GL_COMPILE_STATUS, &Result);
+	glGetShaderiv(vertexShader, GL_INFO_LOG_LENGTH, &InfoLogLength);
+	if (InfoLogLength > 0) {
+		std::vector<char> VertexShaderErrorMessage(InfoLogLength + 1);
+		glGetShaderInfoLog(vertexShader, InfoLogLength, NULL, &VertexShaderErrorMessage[0]);
+		fprintf(stdout, "%sn", &VertexShaderErrorMessage[0]);
+		return -1;
+	}
 	GLuint geometryShader = 0;
 	if (GeometricString != "")
 	{
@@ -105,10 +114,17 @@ GLuint CompileShaders(std::string VertexString, std::string FragmentString, std:
 			str_stream << file.rdbuf();
 			char* textshader = new char[1 + str_stream.str().size()];
 			strcpy_s(textshader, 1 + str_stream.str().size(), str_stream.str().c_str());
-			std::cout << textshader;
+			std::cout << textshader << std::endl;
 			glShaderSource(geometryShader, 1, &textshader, 0);
 			glCompileShader(geometryShader);
 			file.close();
+			glGetShaderiv(geometryShader, GL_COMPILE_STATUS, &Result);
+			glGetShaderiv(geometryShader, GL_INFO_LOG_LENGTH, &InfoLogLength);
+			if (InfoLogLength > 0) {
+				std::vector<char> VertexShaderErrorMessage(InfoLogLength + 1);
+				glGetShaderInfoLog(geometryShader, InfoLogLength, NULL, &VertexShaderErrorMessage[0]);
+				fprintf(stdout, "%sn", &VertexShaderErrorMessage[0]);
+			}
 		}
 	}
 	file.open(FragmentString, std::ios::in);
@@ -119,7 +135,7 @@ GLuint CompileShaders(std::string VertexString, std::string FragmentString, std:
 		str_stream << file.rdbuf();
 		char* textshader = new char[1 + str_stream.str().size()];
 		strcpy_s(textshader, 1 + str_stream.str().size(), str_stream.str().c_str());
-		std::cout << textshader;
+		std::cout << textshader << std::endl;
 		glShaderSource(fragmentShader, 1, &textshader, 0);
 		glCompileShader(fragmentShader);
 		file.close();
@@ -127,6 +143,14 @@ GLuint CompileShaders(std::string VertexString, std::string FragmentString, std:
 	else
 	{
 		return -1;// при таком исключении не будет удалятся Vertex(GEOMETRY) шейдер
+	}
+	glGetShaderiv(fragmentShader, GL_COMPILE_STATUS, &Result);
+	glGetShaderiv(fragmentShader, GL_INFO_LOG_LENGTH, &InfoLogLength);
+	if (InfoLogLength > 0) {
+		std::vector<char> VertexShaderErrorMessage(InfoLogLength + 1);
+		glGetShaderInfoLog(fragmentShader, InfoLogLength, NULL, &VertexShaderErrorMessage[0]);
+		fprintf(stdout, "%sn", &VertexShaderErrorMessage[0]);
+		return -1;
 	}
 	GLuint program = glCreateProgram();
 	glAttachShader(program, vertexShader);
@@ -136,7 +160,14 @@ GLuint CompileShaders(std::string VertexString, std::string FragmentString, std:
 		glAttachShader(program, geometryShader);
 	}
 	glLinkProgram(program);
-
+	glGetProgramiv(program, GL_LINK_STATUS, &Result);
+	glGetProgramiv(program, GL_INFO_LOG_LENGTH, &InfoLogLength);
+	if (InfoLogLength > 0) {
+		std::vector<char> ProgramErrorMessage(InfoLogLength + 1);
+		glGetProgramInfoLog(program, InfoLogLength, NULL, &ProgramErrorMessage[0]);
+		fprintf(stdout, "%s\n", &ProgramErrorMessage[0]);
+		return -1;
+	}
 	glDetachShader(program, vertexShader);
 	glDetachShader(program, fragmentShader);
 	if (GeometricString != "")
@@ -180,7 +211,7 @@ int init(GLFWwindow** window)
 		std::cout << "Failed to initialize GLEW" << std::endl;
 		return -1;
 	}
-	CreateProjection();
+	
 	std::string VertexShader = ".\\Components\\Shaders\\vertexShader_c.vert";
 	std::string FragentShader = ".\\Components\\Shaders\\fragmentShader.frag";
 	if (_program_contour = _program = CompileShaders(VertexShader, FragentShader) == -1)
@@ -192,7 +223,7 @@ int init(GLFWwindow** window)
 	glfwGetFramebufferSize(*window, &width, &height);
 	glfwSetKeyCallback(*window, key_callback);
 	glViewport(0, 0, width, height);
-
+	CreateProjection();
 	_renderObjects.push_back(RenderObject(CreateSolidCube(0.5, 0.0, 2.0, 0.0), new GLint[4]{ 240 ,128 ,128, 255 }, new GLint[4]{ 240 ,128 ,128, 255 }));
 	for (int i = 0; i < 20; i++)
 	{
@@ -205,6 +236,7 @@ int main()
 	GLFWwindow* window;
 	if (init(&window) == -1)
 	{
+		getchar(); //вместо паузы
 		return -1;
 	}
 	while (!glfwWindowShouldClose(window))
@@ -224,6 +256,5 @@ int main()
 		glfwSwapBuffers(window);
 	}
 	glfwTerminate();
-
 	return 0;
 }
