@@ -13,17 +13,17 @@ class RenderObject
 private:
 	 bool _initialized;
 	 GLuint _vertexArray;
-	 GLuint _buffer; //Буффер в котором хранится объект
-	 int _verticeCount;
+	
 	 GLint polygonmode = GL_LINE;
 public:
-	GLint color_obj[4] = { 0, 0, 0, 0 };
+	int _verticeCount;
+	GLuint _buffer;
+	float color_obj[4] = { 0, 0, 0, 0 };
 	GLint color_choice[4] = { 0, 0, 0, 0 };
-	RenderObject(std::vector<Vertex> vertices, GLint *color, GLint *color_choice);//сделать указатели структурой и сделать указатель на структуру и конст
+	RenderObject(std::vector<Vertex> vertices, float *color, GLint *color_choice);//сделать указатели структурой и сделать указатель на структуру и конст
 	~RenderObject();
 	void Bind();
 	void Render();
 	void PolygonMode_now(GLint polygon);
-
 };
 

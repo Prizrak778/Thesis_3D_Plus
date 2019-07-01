@@ -8,7 +8,13 @@ glm::mat4x4 Camera::GetViewMatrix()
 	lookat.x = sinf(Orientation.x)*cosf(Orientation.y);
 	lookat.y = sinf(Orientation.y);
 	lookat.z = cosf(Orientation.x)*cosf(Orientation.y);
-	return glm::lookAt(Position, Position + lookat, glm::vec3(0, 1.0f, 0));
+	glm::vec3 right = glm::vec3(
+		sin(Orientation.x - 3.14f / 2.0f),
+		0,
+		cos(Orientation.x - 3.14f / 2.0f)
+	);
+	glm::vec3 up = glm::cross(right, lookat);
+	return glm::lookAt(Position, Position + lookat, up);
 }
 
 void Camera::Move(float x, float y, float z)

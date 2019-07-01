@@ -6,11 +6,10 @@
 
 struct Vertex
 {
-	const int Size = (4 + 4 + 2) * 4; // size of struct in bytes
-
 	GLfloat _Position[4];
 	GLfloat _NormalCoord[4];
 	GLfloat _TexCoord[2];
+
 
 	Vertex(GLfloat position[4], GLfloat normal[4], GLfloat texcoord[2])
 	{

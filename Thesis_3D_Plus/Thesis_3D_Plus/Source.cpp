@@ -24,6 +24,7 @@ glm::mat4x4 _projectionMatrix;
 glm::mat4x4 _modelView;
 glm::mat4x4 _view;
 glm::vec2 lastMousePos = glm::vec2(30.0f, 140.0f);
+
 float angle = 90.0f;
 
 void key_callback(GLFWwindow* window, int key, int scancode, int action, int mode)
@@ -39,9 +40,10 @@ void key_callback(GLFWwindow* window, int key, int scancode, int action, int mod
 void CreateProjection()
 {
 	float aspectRatio = (float)width / height;
-	_projectionMatrix = glm::perspective(angle * (float)M_PI / 180.0f, aspectRatio, 0.01f, 40.0f);
+	_projectionMatrix = glm::perspective(glm::radians(angle), aspectRatio, 0.1f, 100.0f);
+	glUniformMatrix4fv(21, 1, false, glm::value_ptr(_projectionMatrix));
 	_modelView = camera1.GetViewMatrix();
-	_view = _modelView * _projectionMatrix;
+	_view = _projectionMatrix * _modelView;
 }
 
 void framebuffer_size_callback(GLFWwindow* window, int width, int height)
@@ -52,7 +54,6 @@ void framebuffer_size_callback(GLFWwindow* window, int width, int height)
 	// make sure the viewport matches the new window dimensions; note that width and 
 	// height will be significantly larger than specified on retina displays.
 	glViewport(0, 0, width, height);
-	glUniformMatrix4fv(21, 16, false, glm::value_ptr(_projectionMatrix));
 	std::string title = "Thesis_3D_Plus " + std::to_string(width) + "x" + std::to_string(height);
 	glfwSetWindowTitle(window, title.c_str());
 	// Re-render the scene because the current frame was drawn for the old resolution
@@ -63,13 +64,15 @@ void mouse_move_callback(GLFWwindow* window, double xpos, double ypos)
 	glm::vec2 delta = lastMousePos - glm::vec2(xpos, ypos);
 	camera1.AddRotation(delta.x, delta.y);
 	lastMousePos = glm::vec2(xpos, ypos);
+	std::string title = "Thesis_3D_Plus " + std::to_string(xpos) + "x" + std::to_string(ypos);
+	glfwSetWindowTitle(window, title.c_str());
 }
 
 void Render_figure(RenderObject renderObject, GLint polygonMode)
 {
 	renderObject.Bind();
-	glUniformMatrix4fv(20, 16, false, glm::value_ptr(_view));
-	glUniformMatrix4fv(22, 16, false, glm::value_ptr(_modelView));
+	glUniformMatrix4fv(20, 1, false, glm::value_ptr(_view));
+	glUniformMatrix4fv(22, 1, false, glm::value_ptr(_modelView));
 	renderObject.PolygonMode_now(polygonMode);
 }
 
@@ -83,9 +86,10 @@ GLuint CompileShaders(std::string VertexString, std::string FragmentString, std:
 		std::stringstream str_stream;
 		str_stream << file.rdbuf();
 		char* textshader = new char[1+str_stream.str().size()];
-		strcpy_s(textshader, 1+str_stream.str().size(), str_stream.str().c_str());
-		std::cout << str_stream.str().c_str() << std::endl;
-		glShaderSource(vertexShader, 1, &textshader, 0);
+		const GLint lenhader = str_stream.str().length();
+		strcpy_s(textshader, 1 + lenhader, str_stream.str().c_str());
+		std::cout << textshader << std::endl;
+		glShaderSource(vertexShader, 1, &textshader, &lenhader);
 		glCompileShader(vertexShader);
 		file.close();
 	}
@@ -113,9 +117,10 @@ GLuint CompileShaders(std::string VertexString, std::string FragmentString, std:
 			std::stringstream str_stream;
 			str_stream << file.rdbuf();
 			char* textshader = new char[1 + str_stream.str().size()];
+			const GLint lenhader = 1 + str_stream.str().size();
 			strcpy_s(textshader, 1 + str_stream.str().size(), str_stream.str().c_str());
 			std::cout << textshader << std::endl;
-			glShaderSource(geometryShader, 1, &textshader, 0);
+			glShaderSource(geometryShader, 1, &textshader, &lenhader);
 			glCompileShader(geometryShader);
 			file.close();
 			glGetShaderiv(geometryShader, GL_COMPILE_STATUS, &Result);
@@ -134,9 +139,10 @@ GLuint CompileShaders(std::string VertexString, std::string FragmentString, std:
 		std::stringstream str_stream;
 		str_stream << file.rdbuf();
 		char* textshader = new char[1 + str_stream.str().size()];
-		strcpy_s(textshader, 1 + str_stream.str().size(), str_stream.str().c_str());
+		const GLint lenhader = str_stream.str().length();
+		strcpy_s(textshader, 1 +lenhader, str_stream.str().c_str());
 		std::cout << textshader << std::endl;
-		glShaderSource(fragmentShader, 1, &textshader, 0);
+		glShaderSource(fragmentShader, 1, &textshader, &lenhader);
 		glCompileShader(fragmentShader);
 		file.close();
 	}
@@ -168,7 +174,7 @@ GLuint CompileShaders(std::string VertexString, std::string FragmentString, std:
 		fprintf(stdout, "%s\n", &ProgramErrorMessage[0]);
 		return -1;
 	}
-	glDetachShader(program, vertexShader);
+	/*glDetachShader(program, vertexShader);
 	glDetachShader(program, fragmentShader);
 	if (GeometricString != "")
 	{
@@ -176,7 +182,7 @@ GLuint CompileShaders(std::string VertexString, std::string FragmentString, std:
 		glDeleteProgram(geometryShader);
 	}
 	glDeleteProgram(vertexShader);
-	glDeleteProgram(fragmentShader);
+	glDeleteProgram(fragmentShader);*/
 	return program;
 }
 
@@ -214,7 +220,7 @@ int init(GLFWwindow** window)
 	
 	std::string VertexShader = ".\\Components\\Shaders\\vertexShader_c.vert";
 	std::string FragentShader = ".\\Components\\Shaders\\fragmentShader.frag";
-	if (_program_contour = _program = CompileShaders(VertexShader, FragentShader) == -1)
+	if ((_program_contour = _program = CompileShaders(VertexShader, FragentShader)) == -1)
 	{
 		return -1;
 	}
@@ -224,10 +230,11 @@ int init(GLFWwindow** window)
 	glfwSetKeyCallback(*window, key_callback);
 	glViewport(0, 0, width, height);
 	CreateProjection();
-	_renderObjects.push_back(RenderObject(CreateSolidCube(0.5, 0.0, 2.0, 0.0), new GLint[4]{ 240 ,128 ,128, 255 }, new GLint[4]{ 240 ,128 ,128, 255 }));
+	//_renderObjects.push_back(RenderObject(CreateSolidCube(10.5, 0.0, 2.0, 0.0), new float[4]{ 1.0f ,0.5f ,0.5f, 1 }, new GLint[4]{ 240 ,128 ,128, 255 }));
+	_renderObjects.push_back(RenderObject(CreateSolidCube(0.5, 0.0, 2.0, 0.0), new float[4]{ 1.0f ,0.5f ,0.5f, 1 }, new GLint[4]{ 240 ,128 ,128, 255 }));
 	for (int i = 0; i < 20; i++)
 	{
-		_renderObjects.push_back(RenderObject(CreateSolidCube(0.5f, 1, 12.0f - (float)i, 0.0f), new GLint[4]{ 240 ,128 ,128, 255 }, new GLint[4]{ 240 ,128 ,128, 255 }));
+		_renderObjects.push_back(RenderObject(CreateSolidCube(0.5f, 1, 12.0f - (float)i, 0.0f), new float[4]{ 1.0f, 0.5f ,0.5f, 1 }, new GLint[4]{ 240 ,128 ,128, 255 }));
 	}
 }
 
@@ -244,14 +251,15 @@ int main()
 		glfwPollEvents();
 		glClearColor(0.3f, 0.3f, 0.3f, 1.0f);
 		glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
-		glUseProgram(_program);
-		CreateProjection();
 		for(int i = 0; i < _renderObjects.size(); i++)
 		{
+			CreateProjection();
+			glUseProgram(_program);
 			Render_figure(_renderObjects[i], GL_FILL);
-			const GLint* color = { _renderObjects[i].color_obj };
-			glUniform4iv(19, 4, color);
+			const GLfloat color[4] = { _renderObjects[i].color_obj[0], _renderObjects[i].color_obj[1],_renderObjects[i].color_obj[2],_renderObjects[i].color_obj[3] };
+			glUniform4fv(19, 1, color);
 			_renderObjects[i].Render();
+			glUseProgram(0);
 		}
 		glfwSwapBuffers(window);
 	}
