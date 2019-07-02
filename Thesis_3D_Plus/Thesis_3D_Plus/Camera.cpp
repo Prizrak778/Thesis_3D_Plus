@@ -38,8 +38,9 @@ void Camera::AddRotation(float x, float y)
 {
 	x = x * MouseSensitivity;
 	y = y * MouseSensitivity;
-	float _y = (float)M_PI * 2.0f;
-	Orientation.x = modff((Orientation.x + x), &_y);
+	float _x = (float)M_PI * 2.0f;
+	Orientation.x = modff((Orientation.x + x), &_x);
+	Orientation.x += _x;
 	Orientation.y = glm::max(glm::min(Orientation.y + y, (float)M_PI / 2.0f - 0.1f), (float)-M_PI / 2.0f + 0.1f);
 }
 
