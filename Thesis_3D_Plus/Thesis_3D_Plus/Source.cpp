@@ -35,6 +35,27 @@ void key_callback(GLFWwindow* window, int key, int scancode, int action, int mod
 	{
 		glfwSetWindowShouldClose(window, GL_TRUE);
 	}
+	switch (key)
+	{
+	case GLFW_KEY_W:
+		camera1.Move(0, 1.5f, 0);
+		break;
+	case GLFW_KEY_S:
+		camera1.Move(0, -1.5f, 0);
+		break;
+	case GLFW_KEY_A:
+		camera1.Move(-1.5f, 0.0f, 0);
+		break;
+	case GLFW_KEY_D:
+		camera1.Move(1.5f, 0, 0);
+		break;
+	case GLFW_KEY_Q:
+		camera1.Move(0, 0, 1.5f);
+		break;
+	case GLFW_KEY_E:
+		camera1.Move(0, 0, -1.5f);
+		break;
+	}
 }
 
 void CreateProjection()
@@ -44,12 +65,12 @@ void CreateProjection()
 	glUniformMatrix4fv(21, 1, false, glm::value_ptr(_projectionMatrix));
 	_modelView = camera1.GetViewMatrix();
 	_view = _projectionMatrix * _modelView;
+
 }
 
 void framebuffer_size_callback(GLFWwindow* window, int width, int height)
 {
 	CreateProjection();
-
 	glLoadIdentity();
 	// make sure the viewport matches the new window dimensions; note that width and 
 	// height will be significantly larger than specified on retina displays.
@@ -64,8 +85,6 @@ void mouse_move_callback(GLFWwindow* window, double xpos, double ypos)
 	glm::vec2 delta = lastMousePos - glm::vec2(xpos, ypos);
 	camera1.AddRotation(delta.x, delta.y);
 	lastMousePos = glm::vec2(xpos, ypos);
-	std::string title = "Thesis_3D_Plus " + std::to_string(xpos) + "x" + std::to_string(ypos);
-	glfwSetWindowTitle(window, title.c_str());
 }
 
 void Render_figure(RenderObject renderObject, GLint polygonMode)
@@ -86,7 +105,7 @@ GLuint CompileShaders(std::string VertexString, std::string FragmentString, std:
 		std::stringstream str_stream;
 		str_stream << file.rdbuf();
 		char* textshader = new char[1+str_stream.str().size()];
-		const GLint lenhader = str_stream.str().length();
+		const GLint lenhader = (GLint)str_stream.str().length();
 		strcpy_s(textshader, 1 + lenhader, str_stream.str().c_str());
 		std::cout << textshader << std::endl;
 		glShaderSource(vertexShader, 1, &textshader, &lenhader);
@@ -117,7 +136,7 @@ GLuint CompileShaders(std::string VertexString, std::string FragmentString, std:
 			std::stringstream str_stream;
 			str_stream << file.rdbuf();
 			char* textshader = new char[1 + str_stream.str().size()];
-			const GLint lenhader = 1 + str_stream.str().size();
+			const GLint lenhader = (GLint)(1 + str_stream.str().size());
 			strcpy_s(textshader, 1 + str_stream.str().size(), str_stream.str().c_str());
 			std::cout << textshader << std::endl;
 			glShaderSource(geometryShader, 1, &textshader, &lenhader);
@@ -139,7 +158,7 @@ GLuint CompileShaders(std::string VertexString, std::string FragmentString, std:
 		std::stringstream str_stream;
 		str_stream << file.rdbuf();
 		char* textshader = new char[1 + str_stream.str().size()];
-		const GLint lenhader = str_stream.str().length();
+		const GLint lenhader = (GLint)str_stream.str().length();
 		strcpy_s(textshader, 1 +lenhader, str_stream.str().c_str());
 		std::cout << textshader << std::endl;
 		glShaderSource(fragmentShader, 1, &textshader, &lenhader);
@@ -229,6 +248,8 @@ int init(GLFWwindow** window)
 	glfwGetFramebufferSize(*window, &width, &height);
 	glfwSetKeyCallback(*window, key_callback);
 	glViewport(0, 0, width, height);
+	std::string title = "Thesis_3D_Plus " + std::to_string(width) + "x" + std::to_string(height);
+	glfwSetWindowTitle(*window, title.c_str());
 	CreateProjection();
 	//_renderObjects.push_back(RenderObject(CreateSolidCube(10.5, 0.0, 2.0, 0.0), new float[4]{ 1.0f ,0.5f ,0.5f, 1 }, new GLint[4]{ 240 ,128 ,128, 255 }));
 	_renderObjects.push_back(RenderObject(CreateSolidCube(0.5, 0.0, 2.0, 0.0), new float[4]{ 1.0f ,0.5f ,0.5f, 1 }, new GLint[4]{ 240 ,128 ,128, 255 }));
@@ -236,6 +257,7 @@ int init(GLFWwindow** window)
 	{
 		_renderObjects.push_back(RenderObject(CreateSolidCube(0.5f, 1, 12.0f - (float)i, 0.0f), new float[4]{ 1.0f, 0.5f ,0.5f, 1 }, new GLint[4]{ 240 ,128 ,128, 255 }));
 	}
+	return 0;
 }
 
 int main()

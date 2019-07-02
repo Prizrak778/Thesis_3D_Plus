@@ -22,7 +22,7 @@ void Camera::Move(float x, float y, float z)
 	glm::vec3 offset = glm::vec3(0, 0, 0);
 
 	glm::vec3 forward = glm::vec3(sinf(Orientation.x), 0 ,cosf(Orientation.x));
-	glm::vec3 right = glm::vec3(forward.z, 0, forward.x);
+	glm::vec3 right = glm::vec3(-forward.z, 0, forward.x);
 
 	offset += x * right;
 	offset += y * forward;
