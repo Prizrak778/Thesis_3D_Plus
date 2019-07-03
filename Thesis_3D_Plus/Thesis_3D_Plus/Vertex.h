@@ -1,27 +1,23 @@
 #pragma once
 #include <vector>
+#include <glm\vec2.hpp>
+#include <glm\vec4.hpp>
 #include <GL\glew.h>
 #include <GLFW\glfw3.h>
 #include <GLFW\glfw3native.h>
 
 struct Vertex
 {
-	GLfloat _Position[4];
-	GLfloat _NormalCoord[4];
-	GLfloat _TexCoord[2];
+	glm::vec4  _Position;
+	glm::vec4  _NormalCoord;
+	glm::vec2  _TexCoord;
 
 
-	Vertex(GLfloat position[4], GLfloat normal[4], GLfloat texcoord[2])
+	Vertex(glm::vec4 position, glm::vec4 normal, glm::vec2 texcoord)
 	{
-		for (int i = 0; i < 4; i++)
-		{
-			_Position[i] = position[i];
-			_NormalCoord[i] = normal[i];
-		}
-		for (int i = 0; i < 2; i++)
-		{
-			_TexCoord[i] = texcoord[i];
-		}
+		_Position = position;
+		_NormalCoord = normal;
+		_TexCoord = texcoord;
 	}
 	
 };
@@ -33,58 +29,58 @@ static std::vector<Vertex> CreateSolidCube(float side, float shift_lr, float shi
 		//координаты для треуголника, нормаль, текстурные координаты
 		//на каждый куб по 12 треугольников(36 точек)
 
-		Vertex(new GLfloat[4]{-side + shift_lr, -side + shift_y, -side + shift_ud, 1.0f}, new GLfloat[4]{-1.0, 0, 0, 0.0f}, new GLfloat[2]{0, 0}),
-		Vertex(new GLfloat[4]{-side + shift_lr,  side + shift_y, -side + shift_ud, 1.0}, new GLfloat[4]{-1.0, 0, 0, 0.0}, new GLfloat[2]{0, 1}),
-		Vertex(new GLfloat[4]{-side + shift_lr, -side + shift_y,  side + shift_ud, 1.0}, new GLfloat[4]{-1.0, 0, 0, 0.0}, new GLfloat[2]{1, 0}),
+		Vertex(glm::vec4(-side + shift_lr, -side + shift_y, -side + shift_ud, 1.0f), glm::vec4(-1.0, 0, 0, 0.0f), glm::vec2(0, 0)),
+		Vertex(glm::vec4(-side + shift_lr,  side + shift_y, -side + shift_ud, 1.0), glm::vec4(-1.0, 0, 0, 0.0), glm::vec2(0, 1)),
+		Vertex(glm::vec4(-side + shift_lr, -side + shift_y,  side + shift_ud, 1.0), glm::vec4(-1.0, 0, 0, 0.0), glm::vec2(1, 0)),
 
-		Vertex(new GLfloat[4]{-side + shift_lr, -side + shift_y,  side + shift_ud, 1.0}, new GLfloat[4]{-1.0, 0, 0, 0.0}, new GLfloat[2]{1, 0}),
-		Vertex(new GLfloat[4]{-side + shift_lr,  side + shift_y, -side + shift_ud, 1.0}, new GLfloat[4]{-1.0, 0, 0, 0.0}, new GLfloat[2]{0, 1}),
-		Vertex(new GLfloat[4]{-side + shift_lr,  side + shift_y,  side + shift_ud, 1.0}, new GLfloat[4]{-1.0, 0, 0, 0.0}, new GLfloat[2]{1, 1}),
+		Vertex(glm::vec4(-side + shift_lr, -side + shift_y,  side + shift_ud, 1.0), glm::vec4(-1.0, 0, 0, 0.0), glm::vec2(1, 0)),
+		Vertex(glm::vec4(-side + shift_lr,  side + shift_y, -side + shift_ud, 1.0), glm::vec4(-1.0, 0, 0, 0.0), glm::vec2(0, 1)),
+		Vertex(glm::vec4(-side + shift_lr,  side + shift_y,  side + shift_ud, 1.0), glm::vec4(-1.0, 0, 0, 0.0), glm::vec2(1, 1)),
 
 		//+x
-		Vertex(new GLfloat[4]{ side + shift_lr, -side + shift_y, -side + shift_ud, 1.0}, new GLfloat[4]{1.0, 0, 0, 0.0}, new GLfloat[2]{0, 0}),
-		Vertex(new GLfloat[4]{ side + shift_lr,  side + shift_y, -side + shift_ud, 1.0}, new GLfloat[4]{1.0, 0, 0, 0.0}, new GLfloat[2]{0, 1}),
-		Vertex(new GLfloat[4]{ side + shift_lr, -side + shift_y,  side + shift_ud, 1.0}, new GLfloat[4]{1.0, 0, 0, 0.0}, new GLfloat[2]{1, 0}),
+		Vertex(glm::vec4( side + shift_lr, -side + shift_y, -side + shift_ud, 1.0), glm::vec4(1.0, 0, 0, 0.0), glm::vec2(0, 0)),
+		Vertex(glm::vec4( side + shift_lr,  side + shift_y, -side + shift_ud, 1.0), glm::vec4(1.0, 0, 0, 0.0), glm::vec2(0, 1)),
+		Vertex(glm::vec4( side + shift_lr, -side + shift_y,  side + shift_ud, 1.0), glm::vec4(1.0, 0, 0, 0.0), glm::vec2(1, 0)),
 					 		 															  								 
-		Vertex(new GLfloat[4]{ side + shift_lr, -side + shift_y,  side + shift_ud, 1.0}, new GLfloat[4]{1.0, 0, 0, 0.0}, new GLfloat[2]{1, 0}),
-		Vertex(new GLfloat[4]{ side + shift_lr,  side + shift_y, -side + shift_ud, 1.0}, new GLfloat[4]{1.0, 0, 0, 0.0}, new GLfloat[2]{0, 1}),
-		Vertex(new GLfloat[4]{ side + shift_lr,  side + shift_y,  side + shift_ud, 1.0}, new GLfloat[4]{1.0, 0, 0, 0.0}, new GLfloat[2]{1, 1}),
+		Vertex(glm::vec4( side + shift_lr, -side + shift_y,  side + shift_ud, 1.0), glm::vec4(1.0, 0, 0, 0.0), glm::vec2(1, 0)),
+		Vertex(glm::vec4( side + shift_lr,  side + shift_y, -side + shift_ud, 1.0), glm::vec4(1.0, 0, 0, 0.0), glm::vec2(0, 1)),
+		Vertex(glm::vec4( side + shift_lr,  side + shift_y,  side + shift_ud, 1.0), glm::vec4(1.0, 0, 0, 0.0), glm::vec2(1, 1)),
 
 		//-z
-		Vertex(new GLfloat[4]{-side + shift_lr, -side + shift_y, -side + shift_ud, 1.0}, new GLfloat[4]{0, -1.0, 0, 0.0}, new GLfloat[2]{0, 0}),
-		Vertex(new GLfloat[4]{ side + shift_lr, -side + shift_y, -side + shift_ud, 1.0}, new GLfloat[4]{0, -1.0, 0, 0.0}, new GLfloat[2]{1, 0}),
-		Vertex(new GLfloat[4]{-side + shift_lr, -side + shift_y,  side + shift_ud, 1.0}, new GLfloat[4]{0, -1.0, 0, 0.0}, new GLfloat[2]{0, 1}),
+		Vertex(glm::vec4(-side + shift_lr, -side + shift_y, -side + shift_ud, 1.0), glm::vec4(0, -1.0, 0, 0.0), glm::vec2(0, 0)),
+		Vertex(glm::vec4( side + shift_lr, -side + shift_y, -side + shift_ud, 1.0), glm::vec4(0, -1.0, 0, 0.0), glm::vec2(1, 0)),
+		Vertex(glm::vec4(-side + shift_lr, -side + shift_y,  side + shift_ud, 1.0), glm::vec4(0, -1.0, 0, 0.0), glm::vec2(0, 1)),
 					 	  
-		Vertex(new GLfloat[4]{-side + shift_lr, -side + shift_y,  side + shift_ud, 1.0}, new GLfloat[4]{0, -1.0, 0, 0.0}, new GLfloat[2]{0, 1}),
-		Vertex(new GLfloat[4]{ side + shift_lr, -side + shift_y, -side + shift_ud, 1.0}, new GLfloat[4]{0, -1.0, 0, 0.0}, new GLfloat[2]{1, 0}),
-		Vertex(new GLfloat[4]{ side + shift_lr, -side + shift_y,  side + shift_ud, 1.0}, new GLfloat[4]{0, -1.0, 0, 0.0}, new GLfloat[2]{1, 1}),
+		Vertex(glm::vec4(-side + shift_lr, -side + shift_y,  side + shift_ud, 1.0), glm::vec4(0, -1.0, 0, 0.0), glm::vec2(0, 1)),
+		Vertex(glm::vec4( side + shift_lr, -side + shift_y, -side + shift_ud, 1.0), glm::vec4(0, -1.0, 0, 0.0), glm::vec2(1, 0)),
+		Vertex(glm::vec4( side + shift_lr, -side + shift_y,  side + shift_ud, 1.0), glm::vec4(0, -1.0, 0, 0.0), glm::vec2(1, 1)),
 
 		//z+
-		Vertex(new GLfloat[4]{-side + shift_lr,  side + shift_y, -side + shift_ud, 1.0}, new GLfloat[4]{0,  1.0,  0, 0.0}, new GLfloat[2]{0, 0}),
-		Vertex(new GLfloat[4]{-side + shift_lr,  side + shift_y,  side + shift_ud, 1.0}, new GLfloat[4]{0,  1.0,  0, 0.0}, new GLfloat[2]{0, 1}),
-		Vertex(new GLfloat[4]{ side + shift_lr,  side + shift_y, -side + shift_ud, 1.0}, new GLfloat[4]{0,  1.0,  0, 0.0}, new GLfloat[2]{1, 0}),
+		Vertex(glm::vec4(-side + shift_lr,  side + shift_y, -side + shift_ud, 1.0), glm::vec4(0,  1.0,  0, 0.0), glm::vec2(0, 0)),
+		Vertex(glm::vec4(-side + shift_lr,  side + shift_y,  side + shift_ud, 1.0), glm::vec4(0,  1.0,  0, 0.0), glm::vec2(0, 1)),
+		Vertex(glm::vec4( side + shift_lr,  side + shift_y, -side + shift_ud, 1.0), glm::vec4(0,  1.0,  0, 0.0), glm::vec2(1, 0)),
 						 
-		Vertex(new GLfloat[4]{ side + shift_lr,  side + shift_y, -side + shift_ud, 1.0}, new GLfloat[4]{0,  1.0,  0, 0.0}, new GLfloat[2]{1, 0}),
-		Vertex(new GLfloat[4]{-side + shift_lr,  side + shift_y,  side + shift_ud, 1.0}, new GLfloat[4]{0,  1.0,  0, 0.0}, new GLfloat[2]{0, 1}),
-		Vertex(new GLfloat[4]{ side + shift_lr,  side + shift_y,  side + shift_ud, 1.0}, new GLfloat[4]{0,  1.0,  0, 0.0}, new GLfloat[2]{1, 1}),
+		Vertex(glm::vec4( side + shift_lr,  side + shift_y, -side + shift_ud, 1.0), glm::vec4(0,  1.0,  0, 0.0), glm::vec2(1, 0)),
+		Vertex(glm::vec4(-side + shift_lr,  side + shift_y,  side + shift_ud, 1.0), glm::vec4(0,  1.0,  0, 0.0), glm::vec2(0, 1)),
+		Vertex(glm::vec4( side + shift_lr,  side + shift_y,  side + shift_ud, 1.0), glm::vec4(0,  1.0,  0, 0.0), glm::vec2(1, 1)),
 						 
 		//y-			 
-		Vertex(new GLfloat[4]{-side + shift_lr, -side + shift_y, -side + shift_ud, 1.0}, new GLfloat[4]{0, 0, -1.0, 0.0}, new GLfloat[2]{0, 0}),
-		Vertex(new GLfloat[4]{-side + shift_lr,  side + shift_y, -side + shift_ud, 1.0}, new GLfloat[4]{0, 0, -1.0, 0.0}, new GLfloat[2]{0, 1}),
-		Vertex(new GLfloat[4]{ side + shift_lr, -side + shift_y, -side + shift_ud, 1.0}, new GLfloat[4]{0, 0, -1.0, 0.0}, new GLfloat[2]{1, 0}),
+		Vertex(glm::vec4(-side + shift_lr, -side + shift_y, -side + shift_ud, 1.0), glm::vec4(0, 0, -1.0, 0.0), glm::vec2(0, 0)),
+		Vertex(glm::vec4(-side + shift_lr,  side + shift_y, -side + shift_ud, 1.0), glm::vec4(0, 0, -1.0, 0.0), glm::vec2(0, 1)),
+		Vertex(glm::vec4( side + shift_lr, -side + shift_y, -side + shift_ud, 1.0), glm::vec4(0, 0, -1.0, 0.0), glm::vec2(1, 0)),
 					 	  															 			   					 		  	   		  
-		Vertex(new GLfloat[4]{ side + shift_lr, -side + shift_y, -side + shift_ud, 1.0}, new GLfloat[4]{0, 0, -1.0, 0.0}, new GLfloat[2]{1, 0}),
-		Vertex(new GLfloat[4]{-side + shift_lr,  side + shift_y, -side + shift_ud, 1.0}, new GLfloat[4]{0, 0, -1.0, 0.0}, new GLfloat[2]{0, 1}),
-		Vertex(new GLfloat[4]{ side + shift_lr,  side + shift_y, -side + shift_ud, 1.0}, new GLfloat[4]{0, 0, -1.0, 0.0}, new GLfloat[2]{1, 1}),
+		Vertex(glm::vec4( side + shift_lr, -side + shift_y, -side + shift_ud, 1.0), glm::vec4(0, 0, -1.0, 0.0), glm::vec2(1, 0)),
+		Vertex(glm::vec4(-side + shift_lr,  side + shift_y, -side + shift_ud, 1.0), glm::vec4(0, 0, -1.0, 0.0), glm::vec2(0, 1)),
+		Vertex(glm::vec4( side + shift_lr,  side + shift_y, -side + shift_ud, 1.0), glm::vec4(0, 0, -1.0, 0.0), glm::vec2(1, 1)),
 						 
 		//y+			 
-		Vertex(new GLfloat[4]{-side + shift_lr, -side + shift_y,  side + shift_ud, 1.0}, new GLfloat[4]{0, 0,  1.0, 0.0}, new GLfloat[2]{0, 0}),
-		Vertex(new GLfloat[4]{ side + shift_lr, -side + shift_y,  side + shift_ud, 1.0}, new GLfloat[4]{0, 0,  1.0, 0.0}, new GLfloat[2]{1, 0}),
-		Vertex(new GLfloat[4]{-side + shift_lr,  side + shift_y,  side + shift_ud, 1.0}, new GLfloat[4]{0, 0,  1.0, 0.0}, new GLfloat[2]{0, 1}),
+		Vertex(glm::vec4(-side + shift_lr, -side + shift_y,  side + shift_ud, 1.0), glm::vec4(0, 0,  1.0, 0.0), glm::vec2(0, 0)),
+		Vertex(glm::vec4( side + shift_lr, -side + shift_y,  side + shift_ud, 1.0), glm::vec4(0, 0,  1.0, 0.0), glm::vec2(1, 0)),
+		Vertex(glm::vec4(-side + shift_lr,  side + shift_y,  side + shift_ud, 1.0), glm::vec4(0, 0,  1.0, 0.0), glm::vec2(0, 1)),
 					 	  								  				   			 		  	   					 		  	   		  
-		Vertex(new GLfloat[4]{-side + shift_lr,  side + shift_y,  side + shift_ud, 1.0}, new GLfloat[4]{0, 0,  1.0, 0.0}, new GLfloat[2]{0, 1}),
-		Vertex(new GLfloat[4]{ side + shift_lr, -side + shift_y,  side + shift_ud, 1.0}, new GLfloat[4]{0, 0,  1.0, 0.0}, new GLfloat[2]{1, 0}),
-		Vertex(new GLfloat[4]{ side + shift_lr,  side + shift_y,  side + shift_ud, 1.0}, new GLfloat[4]{0, 0,  1.0, 0.0}, new GLfloat[2]{1, 1}),
+		Vertex(glm::vec4(-side + shift_lr,  side + shift_y,  side + shift_ud, 1.0), glm::vec4(0, 0,  1.0, 0.0), glm::vec2(0, 1)),
+		Vertex(glm::vec4( side + shift_lr, -side + shift_y,  side + shift_ud, 1.0), glm::vec4(0, 0,  1.0, 0.0), glm::vec2(1, 0)),
+		Vertex(glm::vec4( side + shift_lr,  side + shift_y,  side + shift_ud, 1.0), glm::vec4(0, 0,  1.0, 0.0), glm::vec2(1, 1)),
 	};
 	return vertices;
 }

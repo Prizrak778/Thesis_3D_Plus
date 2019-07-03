@@ -2,19 +2,18 @@
 #include <cmath>
 #include <iostream>
 #include <sstream>
-#include <string>
 #include <cstring>
 #include <fstream>
 #include "Vertex.h"
 #include "RenderObject.h"
 #include "Camera.h"
-#include <GL/glew.h>
+#include <GL\glew.h>
 #include <GLFW\glfw3.h>
 #include <GLFW\glfw3native.h>
 #include <glm\vec2.hpp>
 #include <glm\vec4.hpp>
-#include <glm/glm.hpp>
-#include <glm/gtc/type_ptr.hpp>
+#include <glm\glm.hpp>
+#include <glm\gtc/type_ptr.hpp>
 
 std::vector<RenderObject> _renderObjects;
 int _program_contour, _program;
@@ -77,6 +76,7 @@ void framebuffer_size_callback(GLFWwindow* window, int width, int height)
 	glViewport(0, 0, width, height);
 	std::string title = "Thesis_3D_Plus " + std::to_string(width) + "x" + std::to_string(height);
 	glfwSetWindowTitle(window, title.c_str());
+	title.clear();
 	// Re-render the scene because the current frame was drawn for the old resolution
 }
 
@@ -111,6 +111,7 @@ GLuint CompileShaders(std::string VertexString, std::string FragmentString, std:
 		glShaderSource(vertexShader, 1, &textshader, &lenhader);
 		glCompileShader(vertexShader);
 		file.close();
+		delete(textshader);
 	}
 	else
 	{
@@ -142,6 +143,7 @@ GLuint CompileShaders(std::string VertexString, std::string FragmentString, std:
 			glShaderSource(geometryShader, 1, &textshader, &lenhader);
 			glCompileShader(geometryShader);
 			file.close();
+			delete(textshader);
 			glGetShaderiv(geometryShader, GL_COMPILE_STATUS, &Result);
 			glGetShaderiv(geometryShader, GL_INFO_LOG_LENGTH, &InfoLogLength);
 			if (InfoLogLength > 0) {
@@ -163,6 +165,7 @@ GLuint CompileShaders(std::string VertexString, std::string FragmentString, std:
 		std::cout << textshader << std::endl;
 		glShaderSource(fragmentShader, 1, &textshader, &lenhader);
 		glCompileShader(fragmentShader);
+		delete(textshader);
 		file.close();
 	}
 	else
@@ -193,7 +196,7 @@ GLuint CompileShaders(std::string VertexString, std::string FragmentString, std:
 		fprintf(stdout, "%s\n", &ProgramErrorMessage[0]);
 		return -1;
 	}
-	/*glDetachShader(program, vertexShader);
+	glDetachShader(program, vertexShader);
 	glDetachShader(program, fragmentShader);
 	if (GeometricString != "")
 	{
@@ -201,7 +204,7 @@ GLuint CompileShaders(std::string VertexString, std::string FragmentString, std:
 		glDeleteProgram(geometryShader);
 	}
 	glDeleteProgram(vertexShader);
-	glDeleteProgram(fragmentShader);*/
+	glDeleteProgram(fragmentShader);
 	return program;
 }
 
@@ -252,11 +255,20 @@ int init(GLFWwindow** window)
 	glfwSetWindowTitle(*window, title.c_str());
 	CreateProjection();
 	//_renderObjects.push_back(RenderObject(CreateSolidCube(10.5, 0.0, 2.0, 0.0), new float[4]{ 1.0f ,0.5f ,0.5f, 1 }, new GLint[4]{ 240 ,128 ,128, 255 }));
-	_renderObjects.push_back(RenderObject(CreateSolidCube(0.5, 0.0, 2.0, 0.0), new float[4]{ 1.0f ,0.5f ,0.5f, 1 }, new GLint[4]{ 240 ,128 ,128, 255 }));
+	std::vector<Vertex> new_coord_obj = CreateSolidCube(0.5, 0.0, 2.0, 0.0);
+	RenderObject new_obj = RenderObject(new_coord_obj, glm::vec4(1.0f, 0.5f, 0.5f, 1), glm::vec4(1.0f, 0.5f, 0.5f, 1));
+	_renderObjects.push_back(new_obj);
+	new_coord_obj.clear();
 	for (int i = 0; i < 20; i++)
 	{
-		_renderObjects.push_back(RenderObject(CreateSolidCube(0.5f, 1, 12.0f - (float)i, 0.0f), new float[4]{ 1.0f, 0.5f ,0.5f, 1 }, new GLint[4]{ 240 ,128 ,128, 255 }));
+		new_coord_obj = CreateSolidCube(0.5f, 1, 12.0f - (float)i, 0.0f);
+		new_obj = RenderObject(new_coord_obj, glm::vec4(1.0f, 0.5f, 0.5f, 1), glm::vec4(1.0f, 0.5f, 0.5f, 1));
+		_renderObjects.push_back(new_obj);
+		new_coord_obj.clear();
 	}
+	title.clear();
+	VertexShader.clear();
+	FragentShader.clear();
 	return 0;
 }
 
@@ -278,13 +290,19 @@ int main()
 			CreateProjection();
 			glUseProgram(_program);
 			Render_figure(_renderObjects[i], GL_FILL);
-			const GLfloat color[4] = { _renderObjects[i].color_obj[0], _renderObjects[i].color_obj[1],_renderObjects[i].color_obj[2],_renderObjects[i].color_obj[3] };
-			glUniform4fv(19, 1, color);
+			glUniform4fv(19, 1, glm::value_ptr(_renderObjects[i].color_obj));
 			_renderObjects[i].Render();
 			glUseProgram(0);
 		}
 		glfwSwapBuffers(window);
 	}
 	glfwTerminate();
+	for (int i = 0; i < _renderObjects.size(); i++)
+	{
+		_renderObjects[i].clear();
+	}
+	std::vector<RenderObject>().swap(_renderObjects);
+	_renderObjects.clear();
+	camera1.~Camera();
 	return 0;
 }

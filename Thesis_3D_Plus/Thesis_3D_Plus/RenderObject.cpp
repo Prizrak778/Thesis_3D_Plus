@@ -2,7 +2,7 @@
 
 
 
-RenderObject::RenderObject(std::vector<Vertex> vertices, float *color, GLint *color_c)
+RenderObject::RenderObject(std::vector<Vertex> vertices,  glm::vec4 color, glm::vec4 color_c)
 {
 	_verticeCount = vertices.size();
 	glGenVertexArrays(1, &_vertexArray);
@@ -25,8 +25,9 @@ RenderObject::RenderObject(std::vector<Vertex> vertices, float *color, GLint *co
 	glVertexArrayAttribFormat(_vertexArray, 3, 4, GL_FLOAT, GL_FALSE, 32);
 	_initialized = true;
 	glVertexArrayVertexBuffer(_vertexArray, 0, _buffer, NULL, sizeof(Vertex));
-	std::copy(color, color + 4, color_obj);
-	std::copy(color_c, color_c + 4, color_choice);
+	color_obj = color;
+	color_choice = color_c;
+	vertices.clear();
 }
 
 void RenderObject::Bind()//Сохранение буфера для дальнейшей отрисовки
@@ -45,10 +46,13 @@ void RenderObject::Render()
 {
 	glDrawArrays(GL_TRIANGLES, 0, _verticeCount);
 }
+void RenderObject::clear()
+{
+	glDeleteVertexArrays(1, &_vertexArray);
+	glDeleteBuffers(1, &_buffer);
+}
 
 RenderObject::~RenderObject()
 {
 	_initialized = false;
-	//glDeleteVertexArrays(1, &_vertexArray_test);
-	//glDeleteBuffers(1, &_buffer_feedback);
 }

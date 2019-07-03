@@ -4,6 +4,7 @@
 #include <iterator>
 #include <algorithm>
 #include <vector>
+#include <glm\vec4.hpp>
 #include <GL\glew.h>
 #include <GLFW\glfw3.h>
 #include <GLFW\glfw3native.h>
@@ -18,10 +19,11 @@ private:
 public:
 	int _verticeCount;
 	GLuint _buffer;
-	float color_obj[4] = { 0, 0, 0, 0 };
-	GLint color_choice[4] = { 0, 0, 0, 0 };
-	RenderObject(std::vector<Vertex> vertices, float *color, GLint *color_choice);//сделать указатели структурой и сделать указатель на структуру и конст
+	glm::vec4 color_obj = glm::vec4(0, 0, 0, 1);
+	glm::vec4 color_choice = glm::vec4(0, 0, 0, 1);
+	RenderObject(std::vector<Vertex> vertices, glm::vec4 color, glm::vec4 color_choice);//сделать указатели структурой и сделать указатель на структуру и конст
 	~RenderObject();
+	void clear();
 	void Bind();
 	void Render();
 	void PolygonMode_now(GLint polygon);
