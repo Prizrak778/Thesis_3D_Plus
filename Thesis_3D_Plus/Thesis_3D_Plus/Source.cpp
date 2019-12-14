@@ -14,9 +14,16 @@
 #include <glm\vec4.hpp>
 #include <glm\glm.hpp>
 #include <glm\gtc/type_ptr.hpp>
+#include <FL/Fl.H>
+#include <FL/Fl_Window.H>
+#include <FL/Fl_Box.H>
+#include <ctime>
+
 
 std::vector<RenderObject> _renderObjects;
+std::vector<glm::vec4> color4s_unique;
 int _program_contour, _program;
+int _SelectID = -1;
 Camera camera1 = Camera();
 int width, height;
 glm::mat4x4 _projectionMatrix;
@@ -54,7 +61,79 @@ void key_callback(GLFWwindow* window, int key, int scancode, int action, int mod
 	case GLFW_KEY_E:
 		camera1.Move(0, 0, -1.5f);
 		break;
+	case GLFW_KEY_J:
+		camera1.AddRotation(10.0f, 0.0f);
+		break;
+	case GLFW_KEY_L:
+		camera1.AddRotation(-10.0f, 0.0f);
+		break;
+	case GLFW_KEY_I:
+		camera1.AddRotation(0.0f, 10.0f);
+		break;
+	case GLFW_KEY_K:
+		camera1.AddRotation(0.0f, -10.0f);
+		break;
+		/*case GLFW_KEY_8:
+			if (_SelectID > -1)
+			{
+				_renderObjects[_SelectID].changeModelMstrix(new Vector3(1, 0, 0));
+			}
+			break;
+		case GLFW_KEY_6:
+			if (_SelectID > -1)
+			{
+				_renderObjects[_SelectID].changeModelMstrix(new Vector3(0, 0, 1));
+			}
+			break;
+		case GLFW_KEY_4:
+			if (_SelectID > -1)
+			{
+				_renderObjects[_SelectID].changeModelMstrix(new Vector3(0, 0, -1));
+			}
+			break;
+		case GLFW_KEY_2:
+			if (_SelectID > -1)
+			{
+				_renderObjects[_SelectID].changeModelMstrix(new Vector3(-1, 0, 0));
+			}
+			break;
+		case GLFW_KEY_7:
+			if (_SelectID > -1)
+			{
+				_renderObjects[_SelectID].changeModelMstrix(new Vector3(0, -1, 0));
+			}
+			break;
+		case GLFW_KEY_9:
+			if (_SelectID > -1)
+			{
+				_renderObjects[_SelectID].changeModelMstrix(new Vector3(0, 1, 0));
+			}
+			break;
+		}*/
 	}
+}
+
+glm::vec4 RandomColor()//Потом переделаю
+{
+	glm::vec4 temp_color = glm::vec4(0, 0, 0, 1);
+	bool flag = true;
+	while (flag)
+	{
+		flag = false;
+		temp_color = glm::vec4(rand()% 256, rand() % 256, rand() % 256, rand() % 256);
+		for (int i = 0; i < color4s_unique.size() && flag; i++)
+		{
+			if (temp_color == color4s_unique[i] || temp_color == glm::vec4(0, 0, 0, 1))
+			{
+				flag = true;
+			}
+		}
+		if (!flag)
+		{
+			color4s_unique.push_back(temp_color);
+		}
+	}
+	return temp_color;
 }
 
 void CreateProjection()
@@ -93,6 +172,62 @@ void Render_figure(RenderObject renderObject, GLint polygonMode)
 	glUniformMatrix4fv(20, 1, false, glm::value_ptr(_view));
 	glUniformMatrix4fv(22, 1, false, glm::value_ptr(_modelView));
 	renderObject.PolygonMode_now(polygonMode);
+}
+
+void Render_select_color_buf()
+{
+	CreateProjection();
+	glUniformMatrix4fv(21, 1, false, glm::value_ptr(_projectionMatrix));
+	glClearColor(0.0f, 0.0f, 0.0f, 1.0f);
+	glUseProgram(_program_contour);
+	glm::vec4 temp_color;
+	for (std::vector<RenderObject>::iterator it = _renderObjects.begin(); it != _renderObjects.end(); it++)
+	{
+		int iter = std::distance(_renderObjects.begin(), it);
+		temp_color.r = color4s_unique[iter].r / 255;
+		temp_color.g = color4s_unique[iter].g / 255;
+		temp_color.b = color4s_unique[iter].b / 255;
+		temp_color.a = color4s_unique[iter].a / 255;
+		Render_figure(*it, GL_FILL);
+
+		glUniform4fv(19, 1, glm::value_ptr(temp_color));
+		(*it).Render();
+	}
+}
+
+void mouse_button_callback(GLFWwindow* window, int button, int action, int mods)
+{
+	if (button == GLFW_MOUSE_BUTTON_LEFT && action == GLFW_PRESS)
+	{
+		GLuint colorFBO;
+		glGenBuffers(1, &colorFBO);
+		glBindFramebuffer(GL_FRAMEBUFFER, colorFBO);
+		{
+			_SelectID = -1;
+			glEnable(GL_DEPTH_TEST);
+			glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
+
+			unsigned char pixel[4];
+			Render_select_color_buf();
+			int width, height;
+			glfwGetWindowSize(window, &width, &height);
+			glReadPixels(lastMousePos.x, height - lastMousePos.y, 1, 1, GL_RGBA, GL_UNSIGNED_BYTE, &pixel);
+			
+			glm::vec4 temp_color;
+			temp_color.r = pixel[0];
+			temp_color.g = pixel[1];
+			temp_color.b = pixel[2];
+			temp_color.a = pixel[3];
+			for (int i = 0; i < _renderObjects.size(); i++)
+			{
+				if (color4s_unique[i] == temp_color)
+				{
+					_SelectID = i;
+				}
+			}
+		}
+		glBindFramebuffer(GL_FRAMEBUFFER, 0);
+	}
 }
 
 GLuint CompileShaders(std::string VertexString, std::string FragmentString, std::string GeometricString = "")
@@ -247,6 +382,7 @@ int init(GLFWwindow** window)
 		return -1;
 	}
 	glfwSetCursorPosCallback(*window, mouse_move_callback);
+	glfwSetMouseButtonCallback(*window, mouse_button_callback);
 	glfwSetFramebufferSizeCallback(*window, framebuffer_size_callback);
 	glfwGetFramebufferSize(*window, &width, &height);
 	glfwSetKeyCallback(*window, key_callback);
@@ -257,11 +393,13 @@ int init(GLFWwindow** window)
 	//_renderObjects.push_back(RenderObject(CreateSolidCube(10.5, 0.0, 2.0, 0.0), new float[4]{ 1.0f ,0.5f ,0.5f, 1 }, new GLint[4]{ 240 ,128 ,128, 255 }));
 	std::vector<Vertex> new_coord_obj = CreateSolidCube(0.5, 0.0, 2.0, 0.0);
 	RenderObject new_obj = RenderObject(new_coord_obj, glm::vec4(1.0f, 0.5f, 0.5f, 1), glm::vec4(1.0f, 0.5f, 0.5f, 1));
+	RandomColor();
 	_renderObjects.push_back(new_obj);
 	new_coord_obj.clear();
 	for (int i = 0; i < 20; i++)
 	{
 		new_coord_obj = CreateSolidCube(0.5f, 1, 12.0f - (float)i, 0.0f);
+		RandomColor();
 		new_obj = RenderObject(new_coord_obj, glm::vec4(1.0f, 0.5f, 0.5f, 1), glm::vec4(1.0f, 0.5f, 0.5f, 1));
 		_renderObjects.push_back(new_obj);
 		new_coord_obj.clear();
@@ -272,8 +410,9 @@ int init(GLFWwindow** window)
 	return 0;
 }
 
-int main()
+int main(int argc, char **argv)
 {
+	srand(time(0));
 	GLFWwindow* window;
 	if (init(&window) == -1)
 	{
@@ -293,16 +432,37 @@ int main()
 			glUniform4fv(19, 1, glm::value_ptr(_renderObjects[i].color_obj));
 			_renderObjects[i].Render();
 			glUseProgram(0);
+			glUseProgram(_program_contour);
+			if (_SelectID > -1)
+			{
+				glLineWidth(7);
+				Render_figure(_renderObjects[_SelectID], GL_LINE);
+				glm::vec4 color = glm::vec4(0, 0, 0, 255);
+				glUniform4fv(19, 1, glm::value_ptr(color));
+				_renderObjects[_SelectID].Render_line();
+			}
+			glUseProgram(0);
 		}
 		glfwSwapBuffers(window);
 	}
 	glfwTerminate();
+	Fl_Window *Flwindow = new Fl_Window(340, 180);
+	Fl_Box *box = new Fl_Box(20, 40, 300, 100, "Hello, World!");
+	box->box(FL_UP_BOX);
+	box->labelfont(FL_BOLD + FL_ITALIC);
+	box->labelsize(36);
+	box->labeltype(FL_SHADOW_LABEL);
+	Flwindow->end();
+	Flwindow->show(argc, argv);
+	
+
 	for (int i = 0; i < _renderObjects.size(); i++)
 	{
 		_renderObjects[i].clear();
 	}
 	std::vector<RenderObject>().swap(_renderObjects);
 	_renderObjects.clear();
+	color4s_unique.clear();
 	camera1.~Camera();
-	return 0;
+	return Fl::run();
 }

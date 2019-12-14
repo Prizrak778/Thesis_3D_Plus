@@ -26,6 +26,7 @@ public:
 	void clear();
 	void Bind();
 	void Render();
+	void Render_line();
 	void PolygonMode_now(GLint polygon);
 };
 

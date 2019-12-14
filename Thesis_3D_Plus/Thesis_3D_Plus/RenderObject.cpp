@@ -24,6 +24,7 @@ RenderObject::RenderObject(std::vector<Vertex> vertices,  glm::vec4 color, glm::
 	glEnableVertexArrayAttrib(_vertexArray, 3);
 	glVertexArrayAttribFormat(_vertexArray, 3, 4, GL_FLOAT, GL_FALSE, 32);
 	_initialized = true;
+
 	glVertexArrayVertexBuffer(_vertexArray, 0, _buffer, NULL, sizeof(Vertex));
 	color_obj = color;
 	color_choice = color_c;
@@ -44,6 +45,11 @@ void RenderObject::PolygonMode_now(GLint polygon)//тип полигона для отрисовки(Fi
 
 void RenderObject::Render()
 {
+	glDrawArrays(GL_TRIANGLES, 0, _verticeCount);
+}
+void RenderObject::Render_line()//Отрисовка(пока только треугольником)
+{
+	//GL.DrawArrays(PrimitiveType.Lines, 0, _verticeCount);
 	glDrawArrays(GL_TRIANGLES, 0, _verticeCount);
 }
 void RenderObject::clear()

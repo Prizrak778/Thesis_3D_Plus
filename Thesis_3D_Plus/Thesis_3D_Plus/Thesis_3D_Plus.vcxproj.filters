@@ -52,5 +52,6 @@
     <None Include="Components\Shaders\vertexShader_c.vert">
       <Filter>Components\Shaders</Filter>
     </None>
+    <None Include="packages.config" />
   </ItemGroup>
 </Project>
