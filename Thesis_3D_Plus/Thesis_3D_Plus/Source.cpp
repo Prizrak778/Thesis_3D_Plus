@@ -42,40 +42,43 @@ void key_callback(GLFWwindow* window, int key, int scancode, int action, int mod
 	{
 		glfwSetWindowShouldClose(window, GL_TRUE);
 	}
-	if (action == GLFW_PRESS)
+	switch (key)
+	{
+	case GLFW_KEY_W:
+		camera1.Move(0, 1.5f, 0);
+		break;
+	case GLFW_KEY_S:
+		camera1.Move(0, -1.5f, 0);
+		break;
+	case GLFW_KEY_A:
+		camera1.Move(-1.5f, 0.0f, 0);
+		break;
+	case GLFW_KEY_D:
+		camera1.Move(1.5f, 0, 0);
+		break;
+	case GLFW_KEY_Q:
+		camera1.Move(0, 0, 1.5f);
+		break;
+	case GLFW_KEY_E:
+		camera1.Move(0, 0, -1.5f);
+		break;
+	case GLFW_KEY_J:
+		camera1.AddRotation(10.0f, 0.0f);
+		break;
+	case GLFW_KEY_L:
+		camera1.AddRotation(-10.0f, 0.0f);
+		break;
+	case GLFW_KEY_I:
+		camera1.AddRotation(0.0f, 10.0f);
+		break;
+	case GLFW_KEY_K:
+		camera1.AddRotation(0.0f, -10.0f);
+		break;
+	}
+	if (action == GLFW_REPEAT || action == GLFW_PRESS)
 	{
 		switch (key)
 		{
-		case GLFW_KEY_W:
-			camera1.Move(0, 1.5f, 0);
-			break;
-		case GLFW_KEY_S:
-			camera1.Move(0, -1.5f, 0);
-			break;
-		case GLFW_KEY_A:
-			camera1.Move(-1.5f, 0.0f, 0);
-			break;
-		case GLFW_KEY_D:
-			camera1.Move(1.5f, 0, 0);
-			break;
-		case GLFW_KEY_Q:
-			camera1.Move(0, 0, 1.5f);
-			break;
-		case GLFW_KEY_E:
-			camera1.Move(0, 0, -1.5f);
-			break;
-		case GLFW_KEY_J:
-			camera1.AddRotation(10.0f, 0.0f);
-			break;
-		case GLFW_KEY_L:
-			camera1.AddRotation(-10.0f, 0.0f);
-			break;
-		case GLFW_KEY_I:
-			camera1.AddRotation(0.0f, 10.0f);
-			break;
-		case GLFW_KEY_K:
-			camera1.AddRotation(0.0f, -10.0f);
-			break;
 		case GLFW_KEY_8:
 			if (_SelectID > -1)
 			{
