@@ -11,6 +11,7 @@
 #include <GLFW\glfw3.h>
 #include <GLFW\glfw3native.h>
 #include <glm\vec2.hpp>
+#include <glm\vec3.hpp>
 #include <glm\vec4.hpp>
 #include <glm\glm.hpp>
 #include <glm\gtc/type_ptr.hpp>
@@ -41,75 +42,77 @@ void key_callback(GLFWwindow* window, int key, int scancode, int action, int mod
 	{
 		glfwSetWindowShouldClose(window, GL_TRUE);
 	}
-	switch (key)
+	if (action == GLFW_PRESS)
 	{
-	case GLFW_KEY_W:
-		camera1.Move(0, 1.5f, 0);
-		break;
-	case GLFW_KEY_S:
-		camera1.Move(0, -1.5f, 0);
-		break;
-	case GLFW_KEY_A:
-		camera1.Move(-1.5f, 0.0f, 0);
-		break;
-	case GLFW_KEY_D:
-		camera1.Move(1.5f, 0, 0);
-		break;
-	case GLFW_KEY_Q:
-		camera1.Move(0, 0, 1.5f);
-		break;
-	case GLFW_KEY_E:
-		camera1.Move(0, 0, -1.5f);
-		break;
-	case GLFW_KEY_J:
-		camera1.AddRotation(10.0f, 0.0f);
-		break;
-	case GLFW_KEY_L:
-		camera1.AddRotation(-10.0f, 0.0f);
-		break;
-	case GLFW_KEY_I:
-		camera1.AddRotation(0.0f, 10.0f);
-		break;
-	case GLFW_KEY_K:
-		camera1.AddRotation(0.0f, -10.0f);
-		break;
-		/*case GLFW_KEY_8:
+		switch (key)
+		{
+		case GLFW_KEY_W:
+			camera1.Move(0, 1.5f, 0);
+			break;
+		case GLFW_KEY_S:
+			camera1.Move(0, -1.5f, 0);
+			break;
+		case GLFW_KEY_A:
+			camera1.Move(-1.5f, 0.0f, 0);
+			break;
+		case GLFW_KEY_D:
+			camera1.Move(1.5f, 0, 0);
+			break;
+		case GLFW_KEY_Q:
+			camera1.Move(0, 0, 1.5f);
+			break;
+		case GLFW_KEY_E:
+			camera1.Move(0, 0, -1.5f);
+			break;
+		case GLFW_KEY_J:
+			camera1.AddRotation(10.0f, 0.0f);
+			break;
+		case GLFW_KEY_L:
+			camera1.AddRotation(-10.0f, 0.0f);
+			break;
+		case GLFW_KEY_I:
+			camera1.AddRotation(0.0f, 10.0f);
+			break;
+		case GLFW_KEY_K:
+			camera1.AddRotation(0.0f, -10.0f);
+			break;
+		case GLFW_KEY_8:
 			if (_SelectID > -1)
 			{
-				_renderObjects[_SelectID].changeModelMstrix(new Vector3(1, 0, 0));
+				_renderObjects[_SelectID].changeModelMstrix(glm::vec3(1, 0, 0));
 			}
 			break;
 		case GLFW_KEY_6:
 			if (_SelectID > -1)
 			{
-				_renderObjects[_SelectID].changeModelMstrix(new Vector3(0, 0, 1));
+				_renderObjects[_SelectID].changeModelMstrix(glm::vec3(0, 0, 1));
 			}
 			break;
 		case GLFW_KEY_4:
 			if (_SelectID > -1)
 			{
-				_renderObjects[_SelectID].changeModelMstrix(new Vector3(0, 0, -1));
+				_renderObjects[_SelectID].changeModelMstrix(glm::vec3(0, 0, -1));
 			}
 			break;
 		case GLFW_KEY_2:
 			if (_SelectID > -1)
 			{
-				_renderObjects[_SelectID].changeModelMstrix(new Vector3(-1, 0, 0));
+				_renderObjects[_SelectID].changeModelMstrix(glm::vec3(-1, 0, 0));
 			}
 			break;
 		case GLFW_KEY_7:
 			if (_SelectID > -1)
 			{
-				_renderObjects[_SelectID].changeModelMstrix(new Vector3(0, -1, 0));
+				_renderObjects[_SelectID].changeModelMstrix(glm::vec3(0, -1, 0));
 			}
 			break;
 		case GLFW_KEY_9:
 			if (_SelectID > -1)
 			{
-				_renderObjects[_SelectID].changeModelMstrix(new Vector3(0, 1, 0));
+				_renderObjects[_SelectID].changeModelMstrix(glm::vec3(0, 1, 0));
 			}
 			break;
-		}*/
+		}
 	}
 }
 
@@ -170,7 +173,7 @@ void Render_figure(RenderObject renderObject, GLint polygonMode)
 {
 	renderObject.Bind();
 	glUniformMatrix4fv(20, 1, false, glm::value_ptr(_view));
-	glUniformMatrix4fv(22, 1, false, glm::value_ptr(_modelView));
+	glUniformMatrix4fv(22, 1, false, glm::value_ptr(renderObject.ModelMatrix));
 	renderObject.PolygonMode_now(polygonMode);
 }
 

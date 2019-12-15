@@ -13,6 +13,6 @@ out vec4 pos;
 
 void main(void)
 {
-	gl_Position =  view * vec_position;
+	gl_Position =  view * model * vec_position;
 	vs_color = vec_color;
 }

@@ -57,6 +57,10 @@ void RenderObject::clear()
 	glDeleteVertexArrays(1, &_vertexArray);
 	glDeleteBuffers(1, &_buffer);
 }
+void RenderObject::changeModelMstrix(glm::vec3 tr)
+{
+	ModelMatrix = glm::translate(ModelMatrix, tr);
+}
 
 RenderObject::~RenderObject()
 {
