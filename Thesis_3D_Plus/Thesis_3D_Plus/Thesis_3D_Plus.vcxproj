@@ -187,12 +187,14 @@
   <ItemGroup>
     <ClCompile Include="Camera.cpp" />
     <ClCompile Include="GLWindow.cpp" />
+    <ClCompile Include="LightObject.cpp" />
     <ClCompile Include="RenderObject.cpp" />
     <ClCompile Include="Source.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Camera.h" />
     <ClInclude Include="GLWindow.h" />
+    <ClInclude Include="LightObject.h" />
     <ClInclude Include="Vertex.h" />
     <ClInclude Include="RenderObject.h" />
   </ItemGroup>

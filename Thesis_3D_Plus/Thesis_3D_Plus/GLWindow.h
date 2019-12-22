@@ -2,6 +2,7 @@
 #define GL_WINDOW_H
 
 #include "Vertex.h"
+#include "LightObject.h"
 #include "RenderObject.h"
 #include "Camera.h"
 
@@ -25,8 +26,6 @@
 #include <GLFW\glfw3.h>
 #include <GLFW\glfw3native.h>
 
-
-
 class GLWindow : public Fl_Gl_Window
 {
    private: 
@@ -46,12 +45,10 @@ class GLWindow : public Fl_Gl_Window
 	  GLuint CompileShaders(std::string VertexString, std::string FragmentString, std::string GeometricString = "");
 	  virtual int handle(int);
       virtual void draw();
+	  void findRenderObject(std::vector<LightObject> *light_obj, RenderObject render_obj);
 
 	  int Fl_width;
 	  int Fl_height;
-	  std::vector<RenderObject> _renderObjects;
-	  std::vector<glm::vec4> color4s_unique;
-	  std::vector<int> ProgramShaders;
 	  int _program_contour, _program;
 	  int _SelectID = -1;
 	  Camera camera1 = Camera();
@@ -62,14 +59,17 @@ class GLWindow : public Fl_Gl_Window
 	  glm::vec2 lastMousePos = glm::vec2(30.0f, 140.0f);
 	  bool CameraRotationEnable = true;
 	  bool EnableContur = false;
-	  bool EnableLight = false;
+	  bool EnableLight = true;
+	  float angle = 90.0f;
 
+	  std::vector<RenderObject> _renderObjects;
+	  std::vector<LightObject> _lightObjects;
+	  std::vector<glm::vec4> color4s_unique;
+	  std::vector<int> ProgramShaders;
+	 
 	  Fl_Check_Button *CameraRotationEnable_button;//Плохое решение как по мне
 	  Fl_Check_Button *EnableContur_button;//Плохое решение как по мне
 	  Fl_Check_Button *EnableLight_button;//Плохое решение как по мне
 	  Fl_Input_Choice *ShaderOptions;
-
-	  float angle = 90.0f;
 };
-
 #endif

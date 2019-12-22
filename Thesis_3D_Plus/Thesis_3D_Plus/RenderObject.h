@@ -14,6 +14,12 @@
 #include <GLFW\glfw3.h>
 #include <GLFW\glfw3native.h>
 
+enum TypeObjectRender
+{
+	SimpleObject,
+	LightSourceObject,
+	FlatObject
+};
 
 class RenderObject
 {
@@ -24,10 +30,13 @@ private:
 public:
 	int _verticeCount;
 	GLuint _buffer;
+	glm::vec3 position_obj = glm::vec3(0, 0, 0);
 	glm::vec4 color_obj = glm::vec4(0, 0, 0, 1);
 	glm::vec4 color_choice = glm::vec4(0, 0, 0, 1);
 	glm::mat4 ModelMatrix = glm::translate(glm::vec3(0.0f, 0.0f, 0.0f));
-	RenderObject(std::vector<Vertex> vertices, glm::vec4 color, glm::vec4 color_choice);//сделать указатели структурой и сделать указатель на структуру и конст
+	int TybeObject = SimpleObject;
+	RenderObject();
+	RenderObject(std::vector<Vertex> vertices, glm::vec3 position, glm::vec4 color, glm::vec4 color_choice);//сделать указатели структурой и сделать указатель на структуру и конст
 	~RenderObject();
 	void clear();
 	void Bind();

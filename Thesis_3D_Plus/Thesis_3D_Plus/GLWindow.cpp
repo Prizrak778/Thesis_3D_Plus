@@ -213,19 +213,25 @@ int GLWindow::InitializeGL()
 	VertexShader.clear();
 	FragentShader.clear();
 	CreateProjection();
-	std::vector<Vertex> new_coord_obj = CreateSolidCube(0.5, 0.0, 2.0, 0.0);
-	RenderObject new_obj = RenderObject(new_coord_obj, glm::vec4(1.0f, 0.5f, 0.5f, 1), glm::vec4(1.0f, 0.5f, 0.5f, 1));
-	RandomColor();
+	glm::vec3 position_obj = glm::vec3(0.0, 2.0, 0.0);
+	std::vector<Vertex> new_coord_obj = CreateSolidCube(0.5, position_obj);
+	RenderObject new_obj = RenderObject(new_coord_obj, position_obj, glm::vec4(1.0f, 0.5f, 0.5f, 1), RandomColor());
 	_renderObjects.push_back(new_obj);
 	new_coord_obj.clear();
 	for (int i = 0; i < 20; i++)
 	{
-		new_coord_obj = CreateSolidCube(0.5f, 1, 12.0f - (float)i, 0.0f);
-		RandomColor();
-		new_obj = RenderObject(new_coord_obj, glm::vec4(1.0f, 0.5f, 0.5f, 1), glm::vec4(1.0f, 0.5f, 0.5f, 1));
+		position_obj = glm::vec3(1, 12.0f - (float)i, 0.0f);
+		new_coord_obj = CreateSolidCube(0.5f, position_obj);
+		new_obj = RenderObject(new_coord_obj, position_obj, glm::vec4(1.0f, 0.5f, 0.5f, 1), RandomColor());
 		_renderObjects.push_back(new_obj);
 		new_coord_obj.clear();
-	}	
+	}
+	position_obj = glm::vec3(-1.0, 2.0, 0.0);
+	new_coord_obj = CreateSolidCube(0.5, position_obj);
+	LightObject new_light = LightObject(new_coord_obj, glm::vec4(1.0f, 1.0f, 0.0f, 1), RandomColor(), position_obj, glm::vec4(5.0f, 5.0f, 1.0f, 1.0f), glm::vec3(0.2f, 0.2f, 5.0f), glm::vec3(0.5f, 0.5f, 0.5f), glm::vec3(1.0f, 0.0f, 5.0f));
+	_lightObjects.push_back(new_light);
+	_renderObjects.push_back(new_light.LightRenderObject);
+	new_coord_obj.clear();
 	return 0;
 }
 void GLWindow::CreateProjection()
@@ -271,7 +277,6 @@ void GLWindow::draw()
 {
 	glClearColor(0.3f, 0.3f, 0.3f, 1.0f);
 	glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
-	
 	for (int i = 0; i < _renderObjects.size(); i++)
 	{
 
@@ -290,6 +295,10 @@ void GLWindow::draw()
 		glUseProgram(_program);
 		Render_figure(_renderObjects[i], GL_FILL);
 		glUniform4fv(19, 1, glm::value_ptr(_renderObjects[i].color_obj));
+		for(int j = 0; j < _lightObjects.size(); j++)//Кривое решение
+		{
+			_lightObjects[j].PositionLightUniform(18);
+		}
 		_renderObjects[i].Render();
 
 		CreateProjection();
@@ -303,9 +312,20 @@ void GLWindow::draw()
 			_renderObjects[_SelectID].Render_line();
 		}
 		glUseProgram(0);
-
 	}
 }
+
+void GLWindow::findRenderObject(std::vector<LightObject> *light_obj, RenderObject render_obj)
+{
+	for (std::vector<LightObject>::iterator it = (*light_obj).begin(); it != (*light_obj).end(); it++)
+	{
+		if ((*it).LightRenderObject.color_choice == render_obj.color_choice)
+		{
+			(*it).LightRenderObject = render_obj;
+		}
+	}
+}
+
 int GLWindow::handle(int event) {
 	static int first = 1;
 	switch (event) {
@@ -381,44 +401,51 @@ int GLWindow::handle(int event) {
 					EnableLight = true;
 				}
 				break;
-			case '8':
-				if (_SelectID > -1)
-				{
-					_renderObjects[_SelectID].changeModelMstrix(glm::vec3(0.25, 0, 0));
-				}
-				break;
-			case '6':
-				if (_SelectID > -1)
-				{
-					_renderObjects[_SelectID].changeModelMstrix(glm::vec3(0, 0, 0.25));
-				}
-				break;
-			case '4':
-				if (_SelectID > -1)
-				{
-					_renderObjects[_SelectID].changeModelMstrix(glm::vec3(0, 0, -0.25));
-				}
-				break;
-			case '2':
-				if (_SelectID > -1)
-				{
-					_renderObjects[_SelectID].changeModelMstrix(glm::vec3(-0.25, 0, 0));
-				}
-				break;
-			case '7':
-				if (_SelectID > -1)
-				{
-					_renderObjects[_SelectID].changeModelMstrix(glm::vec3(0, -0.25, 0));
-				}
-				break;
-			case '9':
-				if (_SelectID > -1)
-				{
-					_renderObjects[_SelectID].changeModelMstrix(glm::vec3(0, 0.25, 0));
-				}
-				break;
 			default:
 				break;
+			}
+			if (_SelectID > -1)
+			{
+				bool not_default_key = true;
+				switch (key_text)
+				{
+					case '8':
+						_renderObjects[_SelectID].changeModelMstrix(glm::vec3(0.25, 0, 0));
+
+						break;
+					case '6':
+
+						_renderObjects[_SelectID].changeModelMstrix(glm::vec3(0, 0, 0.25));
+
+						break;
+					case '4':
+
+						_renderObjects[_SelectID].changeModelMstrix(glm::vec3(0, 0, -0.25));
+
+						break;
+					case '2':
+
+						_renderObjects[_SelectID].changeModelMstrix(glm::vec3(-0.25, 0, 0));
+
+						break;
+					case '7':
+
+						_renderObjects[_SelectID].changeModelMstrix(glm::vec3(0, -0.25, 0));
+
+						break;
+					case '9':
+
+						_renderObjects[_SelectID].changeModelMstrix(glm::vec3(0, 0.25, 0));
+
+						break;
+					default:
+						not_default_key = false;
+						break;
+				}
+				if (not_default_key && _renderObjects[_SelectID].TybeObject == LightSourceObject)
+				{
+					findRenderObject(&_lightObjects, _renderObjects[_SelectID]);
+				}
 			}
 			redraw();
 			return Fl_Gl_Window::handle(event);

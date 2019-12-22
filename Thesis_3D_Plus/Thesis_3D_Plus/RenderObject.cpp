@@ -2,7 +2,11 @@
 
 
 
-RenderObject::RenderObject(std::vector<Vertex> vertices,  glm::vec4 color, glm::vec4 color_c)
+RenderObject::RenderObject()
+{
+}
+
+RenderObject::RenderObject(std::vector<Vertex> vertices, glm::vec3 position, glm::vec4 color, glm::vec4 color_c)
 {
 	_verticeCount = vertices.size();
 	glGenVertexArrays(1, &_vertexArray);
@@ -27,6 +31,7 @@ RenderObject::RenderObject(std::vector<Vertex> vertices,  glm::vec4 color, glm::
 
 	glVertexArrayVertexBuffer(_vertexArray, 0, _buffer, NULL, sizeof(Vertex));
 	color_obj = color;
+	position_obj = position;
 	color_choice = color_c;
 	vertices.clear();
 }
