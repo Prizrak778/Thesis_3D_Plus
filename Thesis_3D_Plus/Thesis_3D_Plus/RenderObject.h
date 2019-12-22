@@ -14,12 +14,12 @@
 #include <GLFW\glfw3.h>
 #include <GLFW\glfw3native.h>
 
+
 class RenderObject
 {
 private:
 	 bool _initialized;
 	 GLuint _vertexArray;
-	
 	 GLint polygonmode = GL_LINE;
 public:
 	int _verticeCount;

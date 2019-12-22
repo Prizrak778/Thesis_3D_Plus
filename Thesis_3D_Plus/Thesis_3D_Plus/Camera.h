@@ -11,12 +11,14 @@
 class Camera
 {
 private:
-	glm::vec3 Position = { 0.0f, 0.0f, 0.0f };
-	glm::vec3 Orientation = { (float)M_PI, 0.0f, 0.0f };
+	double pi = 3.14159265358979323846;
+	
+	glm::vec3 Orientation = { (float)pi, 0.0f, 0.0f };
 	float MoveSpeed = 0.5f;
 	float MouseSensitivity = 0.01f;
 	bool Rotation_status = true;
 public:
+	glm::vec3 Position = { 0.0f, 0.0f, 0.0f };
 	glm::mat4x4 GetViewMatrix();
 	void Move(float x, float y, float z);
 	void AddRotation(float x, float y);

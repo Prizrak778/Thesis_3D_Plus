@@ -7,16 +7,22 @@ Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "Thesis_3D_Plus", "Thesis_3D
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
+		Debug|WIN32 = Debug|WIN32
 		Debug|x64 = Debug|x64
 		Debug|x86 = Debug|x86
+		Release|WIN32 = Release|WIN32
 		Release|x64 = Release|x64
 		Release|x86 = Release|x86
 	EndGlobalSection
 	GlobalSection(ProjectConfigurationPlatforms) = postSolution
+		{EB88361A-3399-486E-98C7-23C14E466FDE}.Debug|WIN32.ActiveCfg = Debug|Win32
+		{EB88361A-3399-486E-98C7-23C14E466FDE}.Debug|WIN32.Build.0 = Debug|Win32
 		{EB88361A-3399-486E-98C7-23C14E466FDE}.Debug|x64.ActiveCfg = Debug|x64
 		{EB88361A-3399-486E-98C7-23C14E466FDE}.Debug|x64.Build.0 = Debug|x64
 		{EB88361A-3399-486E-98C7-23C14E466FDE}.Debug|x86.ActiveCfg = Debug|Win32
 		{EB88361A-3399-486E-98C7-23C14E466FDE}.Debug|x86.Build.0 = Debug|Win32
+		{EB88361A-3399-486E-98C7-23C14E466FDE}.Release|WIN32.ActiveCfg = Release|Win32
+		{EB88361A-3399-486E-98C7-23C14E466FDE}.Release|WIN32.Build.0 = Release|Win32
 		{EB88361A-3399-486E-98C7-23C14E466FDE}.Release|x64.ActiveCfg = Release|x64
 		{EB88361A-3399-486E-98C7-23C14E466FDE}.Release|x64.Build.0 = Release|x64
 		{EB88361A-3399-486E-98C7-23C14E466FDE}.Release|x86.ActiveCfg = Release|Win32
