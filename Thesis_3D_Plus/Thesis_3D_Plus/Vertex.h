@@ -97,12 +97,12 @@ static std::vector<Vertex> CreateSolidCube(float side, glm::vec3 position)
 		//координаты для треуголника, нормаль, текстурные координаты
 		//на каждый куб по 12 треугольников(36 точек)
 
-		Vertex(glm::vec4(-side + shift_lr, -side + shift_y, -side + shift_ud, 1.0f), glm::vec4(-1.0, 0, 0, 0.0f), glm::vec2(0, 0)),
-		Vertex(glm::vec4(-side + shift_lr,  side + shift_y, -side + shift_ud, 1.0), glm::vec4(-1.0, 0, 0, 0.0), glm::vec2(0, 1)),
+		Vertex(glm::vec4(-side + shift_lr, -side + shift_y, -side + shift_ud, 1.0), glm::vec4(-1.0, 0, 0, 0.0), glm::vec2(0, 0)),
 		Vertex(glm::vec4(-side + shift_lr, -side + shift_y,  side + shift_ud, 1.0), glm::vec4(-1.0, 0, 0, 0.0), glm::vec2(1, 0)),
+		Vertex(glm::vec4(-side + shift_lr,  side + shift_y, -side + shift_ud, 1.0), glm::vec4(-1.0, 0, 0, 0.0), glm::vec2(0, 1)),
 
-		Vertex(glm::vec4(-side + shift_lr, -side + shift_y,  side + shift_ud, 1.0), glm::vec4(-1.0, 0, 0, 0.0), glm::vec2(1, 0)),
 		Vertex(glm::vec4(-side + shift_lr,  side + shift_y, -side + shift_ud, 1.0), glm::vec4(-1.0, 0, 0, 0.0), glm::vec2(0, 1)),
+		Vertex(glm::vec4(-side + shift_lr, -side + shift_y,  side + shift_ud, 1.0), glm::vec4(-1.0, 0, 0, 0.0), glm::vec2(1, 0)),
 		Vertex(glm::vec4(-side + shift_lr,  side + shift_y,  side + shift_ud, 1.0), glm::vec4(-1.0, 0, 0, 0.0), glm::vec2(1, 1)),
 
 		//+x
@@ -116,21 +116,21 @@ static std::vector<Vertex> CreateSolidCube(float side, glm::vec3 position)
 
 		//-z
 		Vertex(glm::vec4(-side + shift_lr, -side + shift_y, -side + shift_ud, 1.0), glm::vec4(0, -1.0, 0, 0.0), glm::vec2(0, 0)),
-		Vertex(glm::vec4(side + shift_lr, -side + shift_y, -side + shift_ud, 1.0), glm::vec4(0, -1.0, 0, 0.0), glm::vec2(1, 0)),
+		Vertex(glm::vec4( side + shift_lr, -side + shift_y, -side + shift_ud, 1.0), glm::vec4(0, -1.0, 0, 0.0), glm::vec2(1, 0)),
 		Vertex(glm::vec4(-side + shift_lr, -side + shift_y,  side + shift_ud, 1.0), glm::vec4(0, -1.0, 0, 0.0), glm::vec2(0, 1)),
 
 		Vertex(glm::vec4(-side + shift_lr, -side + shift_y,  side + shift_ud, 1.0), glm::vec4(0, -1.0, 0, 0.0), glm::vec2(0, 1)),
-		Vertex(glm::vec4(side + shift_lr, -side + shift_y, -side + shift_ud, 1.0), glm::vec4(0, -1.0, 0, 0.0), glm::vec2(1, 0)),
-		Vertex(glm::vec4(side + shift_lr, -side + shift_y,  side + shift_ud, 1.0), glm::vec4(0, -1.0, 0, 0.0), glm::vec2(1, 1)),
+		Vertex(glm::vec4( side + shift_lr, -side + shift_y, -side + shift_ud, 1.0), glm::vec4(0, -1.0, 0, 0.0), glm::vec2(1, 0)),
+		Vertex(glm::vec4( side + shift_lr, -side + shift_y,  side + shift_ud, 1.0), glm::vec4(0, -1.0, 0, 0.0), glm::vec2(1, 1)),
 
 		//z+
 		Vertex(glm::vec4(-side + shift_lr,  side + shift_y, -side + shift_ud, 1.0), glm::vec4(0,  1.0,  0, 0.0), glm::vec2(0, 0)),
 		Vertex(glm::vec4(-side + shift_lr,  side + shift_y,  side + shift_ud, 1.0), glm::vec4(0,  1.0,  0, 0.0), glm::vec2(0, 1)),
-		Vertex(glm::vec4(side + shift_lr,  side + shift_y, -side + shift_ud, 1.0), glm::vec4(0,  1.0,  0, 0.0), glm::vec2(1, 0)),
+		Vertex(glm::vec4( side + shift_lr,  side + shift_y, -side + shift_ud, 1.0), glm::vec4(0,  1.0,  0, 0.0), glm::vec2(1, 0)),
 
-		Vertex(glm::vec4(side + shift_lr,  side + shift_y, -side + shift_ud, 1.0), glm::vec4(0,  1.0,  0, 0.0), glm::vec2(1, 0)),
+		Vertex(glm::vec4( side + shift_lr,  side + shift_y, -side + shift_ud, 1.0), glm::vec4(0,  1.0,  0, 0.0), glm::vec2(1, 0)),
 		Vertex(glm::vec4(-side + shift_lr,  side + shift_y,  side + shift_ud, 1.0), glm::vec4(0,  1.0,  0, 0.0), glm::vec2(0, 1)),
-		Vertex(glm::vec4(side + shift_lr,  side + shift_y,  side + shift_ud, 1.0), glm::vec4(0,  1.0,  0, 0.0), glm::vec2(1, 1)),
+		Vertex(glm::vec4( side + shift_lr,  side + shift_y,  side + shift_ud, 1.0), glm::vec4(0,  1.0,  0, 0.0), glm::vec2(1, 1)),
 
 		//y-			 
 		Vertex(glm::vec4(-side + shift_lr, -side + shift_y, -side + shift_ud, 1.0), glm::vec4(0, 0, -1.0, 0.0), glm::vec2(0, 0)),

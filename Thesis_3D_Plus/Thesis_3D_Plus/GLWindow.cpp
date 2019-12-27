@@ -40,6 +40,30 @@ int GLWindow::CompileAllShaders()
 		return -1;
 	}
 	ProgramShaders.push_back(_program);
+	VertexShader = ".\\Components\\Shaders\\vertexShader_mirror.vert";
+	FragentShader = ".\\Components\\Shaders\\fragmentShader.frag";
+	if ((_program = CompileShaders(VertexShader, FragentShader)) == -1)
+	{
+		std::cout << "P.S. with reflection shader failed" << std::endl;
+		return -1;
+	}
+	ProgramShaders.push_back(_program);
+	VertexShader = ".\\Components\\Shaders\\vertexShader_double_mirror.vert";
+	FragentShader = ".\\Components\\Shaders\\fragmentShader_double_mirror.frag";
+	if ((_program = CompileShaders(VertexShader, FragentShader)) == -1)
+	{
+		std::cout << "P.S. with double reflection shader failed" << std::endl;
+		return -1;
+	}
+	ProgramShaders.push_back(_program);
+	VertexShader = ".\\Components\\Shaders\\vertexShader_flatshadow.vert";
+	FragentShader = ".\\Components\\Shaders\\fragmentShader.frag";
+	if ((_program = CompileShaders(VertexShader, FragentShader)) == -1)
+	{
+		std::cout << "P.S. with double reflection shader failed" << std::endl;
+		return -1;
+	}
+	ProgramShaders.push_back(_program);
 	_program = ProgramShaders[0];
 	VertexShader.clear();
 	FragentShader.clear();
@@ -203,15 +227,11 @@ int GLWindow::InitializeGL()
 	glClearColor(0.3f, 0.3f, 0.3f, 1.0f);
 	glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
 	glEnable(GL_DEPTH_TEST);
-	std::string VertexShader = ".\\Components\\Shaders\\vertexShader_c.vert";
-	std::string FragentShader = ".\\Components\\Shaders\\fragmentShader.frag";
+	glDisable(GL_CULL_FACE);
 	if (CompileAllShaders() == -1)
 	{
 		return -1;
 	}
-	
-	VertexShader.clear();
-	FragentShader.clear();
 	CreateProjection();
 	glm::vec3 position_obj = glm::vec3(0.0, 2.0, 0.0);
 	std::vector<Vertex> new_coord_obj = CreateSolidCube(0.5, position_obj);
@@ -249,6 +269,7 @@ void GLWindow::Render_figure(RenderObject renderObject, GLint polygonMode)
 	renderObject.Bind();
 	glUniformMatrix4fv(20, 1, false, glm::value_ptr(_view));
 	glUniformMatrix4fv(22, 1, false, glm::value_ptr(renderObject.ModelMatrix));
+	glUniform4fv(23, 1, glm::value_ptr(camera1.Position));
 	renderObject.PolygonMode_now(polygonMode);
 }
 
@@ -290,7 +311,14 @@ void GLWindow::draw()
 			glUniform4fv(19, 1, glm::value_ptr(color));
 			_renderObjects[i].Render_line();
 		}
-
+		if (_SelectID > -1)
+		{
+			glLineWidth(7);
+			Render_figure(_renderObjects[_SelectID], GL_LINE);
+			glm::vec4 color = glm::vec4(0, 0, 0, 255);
+			glUniform4fv(19, 1, glm::value_ptr(color));
+			_renderObjects[_SelectID].Render_line();
+		}
 		CreateProjection();
 		glUseProgram(_program);
 		Render_figure(_renderObjects[i], GL_FILL);
@@ -300,17 +328,7 @@ void GLWindow::draw()
 			_lightObjects[j].PositionLightUniform(18);
 		}
 		_renderObjects[i].Render();
-
-		CreateProjection();
-		glUseProgram(_program_contour);
-		if (_SelectID > -1)
-		{
-			glLineWidth(7);
-			Render_figure(_renderObjects[_SelectID], GL_LINE);
-			glm::vec4 color = glm::vec4(0, 0, 0, 255);
-			glUniform4fv(19, 1, glm::value_ptr(color));
-			_renderObjects[_SelectID].Render_line();
-		}
+		
 		glUseProgram(0);
 	}
 }

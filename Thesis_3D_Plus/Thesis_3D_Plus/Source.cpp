@@ -153,6 +153,9 @@ int main(int argc, char **argv)
 	glWindow->ShaderOptions = new Fl_Input_Choice(860, 440, 120, 20);
 	(((Fl_Input_Choice*)((GLWindow*)glWindow)->ShaderOptions))->add("Deafult shader");
 	(((Fl_Input_Choice*)((GLWindow*)glWindow)->ShaderOptions))->add("P.S. without reflection");
+	(((Fl_Input_Choice*)((GLWindow*)glWindow)->ShaderOptions))->add("P.S. with reflection"); 
+	(((Fl_Input_Choice*)((GLWindow*)glWindow)->ShaderOptions))->add("P.S. with double reflection");
+	(((Fl_Input_Choice*)((GLWindow*)glWindow)->ShaderOptions))->add("P.S. with flat shadow");
 	(((Fl_Input_Choice*)((GLWindow*)glWindow)->ShaderOptions))->callback(choice_shader, 0);
 	(((Fl_Input_Choice*)((GLWindow*)glWindow)->ShaderOptions))->menubutton()->value(0);
 	(((Fl_Input_Choice*)((GLWindow*)glWindow)->ShaderOptions))->value(0);

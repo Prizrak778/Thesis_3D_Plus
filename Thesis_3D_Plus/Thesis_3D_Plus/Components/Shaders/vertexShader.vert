@@ -1,8 +1,8 @@
 #version 450 core
 
-layout (location = 1) in vec4 vec_position;
-layout (location = 2) in vec4 vec_normal;
-layout (location = 18) uniform vec4 vec_LightPosition;
+layout(location = 1) in vec4 vec_position;
+layout(location = 2) in vec4 vec_normal;
+layout(location = 18) uniform vec4 vec_LightPosition;
 layout(location = 20) uniform mat4 view;
 layout(location = 21) uniform mat4 projection;
 layout(location = 22) uniform mat4 modelView;
