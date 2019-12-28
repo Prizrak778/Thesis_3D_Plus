@@ -33,3 +33,8 @@ void LightObject::MatrixViewUnifomr(int location)
 	glm::mat4 modelview = glm::translate(glm::vec3(0.0f, 0.0f, 0.0f));
 	glUniformMatrix4fv(location, 1, false, glm::value_ptr(modelview));
 }
+
+void LightObject::IntensityLightUniform(int location)
+{
+	glUniform3fv(location, 1, glm::value_ptr(AmbirntIntensity));
+}

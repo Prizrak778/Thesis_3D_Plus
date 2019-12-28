@@ -7,6 +7,7 @@
 #include "Camera.h"
 
 #include <FL/Fl.H>
+#include <FL/Fl_Box.H>
 #include <FL/Fl_Window.H>
 #include <FL/Fl_Gl_Window.H>
 #include <FL/Fl_Check_Button.H>
@@ -20,6 +21,7 @@
 #include <sstream>
 #include <cstring>
 #include <fstream>
+#include <ctime>
 
 #define GLEW_STATIC 1
 #include <GL\glew.h>
@@ -49,7 +51,7 @@ class GLWindow : public Fl_Gl_Window
 
 	  int Fl_width;
 	  int Fl_height;
-	  int _program_contour, _program;
+	  int _program_contour, _program, _program_some_light;
 	  int _SelectID = -1;
 	  Camera camera1 = Camera();
 	  int width, height;
@@ -71,5 +73,6 @@ class GLWindow : public Fl_Gl_Window
 	  Fl_Check_Button *EnableContur_button;//Плохое решение как по мне
 	  Fl_Check_Button *EnableLight_button;//Плохое решение как по мне
 	  Fl_Input_Choice *ShaderOptions;
+	  Fl_Box *lblFps;
 };
 #endif

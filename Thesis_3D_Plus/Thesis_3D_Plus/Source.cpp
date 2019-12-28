@@ -150,12 +150,16 @@ int main(int argc, char **argv)
 	Fl_Box *lblShaderOptions = new Fl_Box(860, 420, 120, 20, "Shader options");
 	lblShaderOptions->labelsize(12);
 	lblShaderOptions->align(FL_ALIGN_INSIDE | FL_ALIGN_LEFT);
+	glWindow->lblFps = new Fl_Box(860, 600, 120, 20, "FPS:");
+	((Fl_Box*)((GLWindow*)glWindow)->lblFps)->labelsize(12);
+	((Fl_Box*)((GLWindow*)glWindow)->lblFps)->align(FL_ALIGN_INSIDE | FL_ALIGN_LEFT);
 	glWindow->ShaderOptions = new Fl_Input_Choice(860, 440, 120, 20);
 	(((Fl_Input_Choice*)((GLWindow*)glWindow)->ShaderOptions))->add("Deafult shader");
 	(((Fl_Input_Choice*)((GLWindow*)glWindow)->ShaderOptions))->add("P.S. without reflection");
 	(((Fl_Input_Choice*)((GLWindow*)glWindow)->ShaderOptions))->add("P.S. with reflection"); 
 	(((Fl_Input_Choice*)((GLWindow*)glWindow)->ShaderOptions))->add("P.S. with double reflection");
 	(((Fl_Input_Choice*)((GLWindow*)glWindow)->ShaderOptions))->add("P.S. with flat shadow");
+	(((Fl_Input_Choice*)((GLWindow*)glWindow)->ShaderOptions))->add("Some P.S.");
 	(((Fl_Input_Choice*)((GLWindow*)glWindow)->ShaderOptions))->callback(choice_shader, 0);
 	(((Fl_Input_Choice*)((GLWindow*)glWindow)->ShaderOptions))->menubutton()->value(0);
 	(((Fl_Input_Choice*)((GLWindow*)glWindow)->ShaderOptions))->value(0);
@@ -174,10 +178,6 @@ int main(int argc, char **argv)
 		return 1;
 	}
 
-	while (Fl::run())
-	{
-		glWindow->redraw();
-	}
 	while(Fl::wait())
 	{
 		glWindow->redraw();

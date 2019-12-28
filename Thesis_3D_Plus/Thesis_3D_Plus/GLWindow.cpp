@@ -64,6 +64,15 @@ int GLWindow::CompileAllShaders()
 		return -1;
 	}
 	ProgramShaders.push_back(_program);
+	VertexShader = ".\\Components\\Shaders\\vertexShader_some_light.vert";
+	FragentShader = ".\\Components\\Shaders\\fragmentShader.frag";
+	if ((_program = CompileShaders(VertexShader, FragentShader)) == -1)
+	{
+		std::cout << "Some P.S. shader failed" << std::endl;
+		return -1;
+	}
+	_program_some_light = _program;;
+	ProgramShaders.push_back(_program);
 	_program = ProgramShaders[0];
 	VertexShader.clear();
 	FragentShader.clear();
@@ -248,9 +257,19 @@ int GLWindow::InitializeGL()
 	}
 	position_obj = glm::vec3(-1.0, 2.0, 0.0);
 	new_coord_obj = CreateSolidCube(0.5, position_obj);
-	LightObject new_light = LightObject(new_coord_obj, glm::vec4(1.0f, 1.0f, 0.0f, 1), RandomColor(), position_obj, glm::vec4(5.0f, 5.0f, 1.0f, 1.0f), glm::vec3(0.2f, 0.2f, 5.0f), glm::vec3(0.5f, 0.5f, 0.5f), glm::vec3(1.0f, 0.0f, 5.0f));
+	LightObject new_light = LightObject(new_coord_obj, glm::vec4(0.3f, 0.3f, 0.0f, 1), RandomColor(), position_obj, glm::vec4(5.0f, 5.0f, 1.0f, 1.0f), glm::vec3(0.2f, 0.2f, 5.0f), glm::vec3(0.3f, 0.3f, 0.0f), glm::vec3(1.0f, 0.0f, 5.0f));
 	_lightObjects.push_back(new_light);
 	_renderObjects.push_back(new_light.LightRenderObject);
+	position_obj = glm::vec3(-1.0, 3.0, 0.0);
+	new_coord_obj = CreateSolidCube(0.5, position_obj);
+	LightObject new_light1 = LightObject(new_coord_obj, glm::vec4(0.0f, 0.3f, 0.3f, 1), RandomColor(), position_obj, glm::vec4(5.0f, 5.0f, 1.0f, 1.0f), glm::vec3(0.2f, 0.2f, 5.0f), glm::vec3(0.0f, 0.3f, 0.3f), glm::vec3(1.0f, 0.0f, 5.0f));
+	_lightObjects.push_back(new_light1);
+	_renderObjects.push_back(new_light1.LightRenderObject);
+	position_obj = glm::vec3(-1.0, 4.0, 0.0);
+	new_coord_obj = CreateSolidCube(0.5, position_obj);
+	LightObject new_light2 = LightObject(new_coord_obj, glm::vec4(0.3f, 0.0f, 0.3f, 1), RandomColor(), position_obj, glm::vec4(5.0f, 5.0f, 1.0f, 1.0f), glm::vec3(0.2f, 0.2f, 5.0f), glm::vec3(0.3f, 0.0f, 0.3f), glm::vec3(1.0f, 0.0f, 5.0f));
+	_lightObjects.push_back(new_light2);
+	_renderObjects.push_back(new_light2.LightRenderObject);
 	new_coord_obj.clear();
 	return 0;
 }
@@ -296,6 +315,7 @@ void GLWindow::Render_select_color_buf()
 
 void GLWindow::draw()
 {
+	clock_t start = clock();
 	glClearColor(0.3f, 0.3f, 0.3f, 1.0f);
 	glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
 	for (int i = 0; i < _renderObjects.size(); i++)
@@ -325,12 +345,26 @@ void GLWindow::draw()
 		glUniform4fv(19, 1, glm::value_ptr(_renderObjects[i].color_obj));
 		for(int j = 0; j < _lightObjects.size(); j++)//Кривое решение
 		{
-			_lightObjects[j].PositionLightUniform(18);
+			if (_program != _program_some_light)
+			{
+				_lightObjects[j].PositionLightUniform(18);
+				j = _lightObjects.size();
+			}
+			else
+			{
+				_lightObjects[j].PositionLightUniform(16 + j);
+				_lightObjects[j].IntensityLightUniform(13 + j);
+			}
 		}
 		_renderObjects[i].Render();
 		
 		glUseProgram(0);
 	}
+
+	clock_t end = clock();
+	std::string FPS = "FPS: " + std::to_string((int)(1/((float)(end - start) / CLOCKS_PER_SEC))) + "\n";
+	lblFps->copy_label(FPS.c_str());
+	
 }
 
 void GLWindow::findRenderObject(std::vector<LightObject> *light_obj, RenderObject render_obj)

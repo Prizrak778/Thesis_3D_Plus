@@ -18,4 +18,5 @@ public:
 	void SetColorRadiation(glm::vec4 color);
 	void PositionLightUniform(int location);
 	void MatrixViewUnifomr(int location);
+	void IntensityLightUniform(int location);
 };
