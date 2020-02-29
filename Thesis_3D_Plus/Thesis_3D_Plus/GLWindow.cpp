@@ -71,7 +71,39 @@ int GLWindow::CompileAllShaders()
 		std::cout << "Some P.S. shader failed" << std::endl;
 		return -1;
 	}
-	_program_some_light = _program;;
+	_program_some_light = _program;
+	ProgramShaders.push_back(_program);
+	VertexShader = ".\\Components\\Shaders\\vertexShader_Lgh_directed.vert";
+	FragentShader = ".\\Components\\Shaders\\fragmentShader.frag";
+	if ((_program = CompileShaders(VertexShader, FragentShader)) == -1)
+	{
+		std::cout << "Light direction shader failed" << std::endl;
+		return -1;
+	}
+	ProgramShaders.push_back(_program);
+	VertexShader = ".\\Components\\Shaders\\vertexShader_Fong.vert";
+	FragentShader = ".\\Components\\Shaders\\fragmentShader_Fong.frag";
+	if ((_program = CompileShaders(VertexShader, FragentShader)) == -1)
+	{
+		std::cout << "Fong model shader failed" << std::endl;
+		return -1;
+	}
+	ProgramShaders.push_back(_program);
+	VertexShader = ".\\Components\\Shaders\\vertexShader_Fong.vert";
+	FragentShader = ".\\Components\\Shaders\\fragmentShader_Fong_half.frag";
+	if ((_program = CompileShaders(VertexShader, FragentShader)) == -1)
+	{
+		std::cout << "Fong model with use vector half way shader failed" << std::endl;
+		return -1;
+	}
+	ProgramShaders.push_back(_program);
+	VertexShader = ".\\Components\\Shaders\\vertexShader_Fong.vert";
+	FragentShader = ".\\Components\\Shaders\\fragmentShader_Fong_directed.frag";
+	if ((_program = CompileShaders(VertexShader, FragentShader)) == -1)
+	{
+		std::cout << "Fong model directed shader failed" << std::endl;
+		return -1;
+	}
 	ProgramShaders.push_back(_program);
 	_program = ProgramShaders[0];
 	VertexShader.clear();
@@ -348,6 +380,7 @@ void GLWindow::draw()
 			if (_program != _program_some_light)
 			{
 				_lightObjects[j].PositionLightUniform(18);
+				_lightObjects[j].SendParmInShader(24);
 				j = _lightObjects.size();
 			}
 			else
@@ -379,7 +412,8 @@ void GLWindow::findRenderObject(std::vector<LightObject> *light_obj, RenderObjec
 }
 
 int GLWindow::handle(int event) {
-	static int first = 1;
+	static int first = 1;
+
 	switch (event) {
 		case FL_SHORTCUT:
 		{

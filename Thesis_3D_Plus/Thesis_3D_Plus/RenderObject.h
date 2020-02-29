@@ -1,5 +1,6 @@
 #pragma once
 #include "Vertex.h"
+#include <string>
 #include <iostream>
 #include <iterator>
 #include <algorithm>

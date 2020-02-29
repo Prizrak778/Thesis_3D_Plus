@@ -19,4 +19,6 @@ public:
 	void PositionLightUniform(int location);
 	void MatrixViewUnifomr(int location);
 	void IntensityLightUniform(int location);
+	void SendParmInShader(int location);
+	void SendParmInShader(int location, std::string nameBlock );
 };

@@ -38,3 +38,25 @@ void LightObject::IntensityLightUniform(int location)
 {
 	glUniform3fv(location, 1, glm::value_ptr(AmbirntIntensity));
 }
+
+void LightObject::SendParmInShader(int location)
+{
+	SendParmInShader(location, "SpotLightInfo");
+}
+
+void LightObject::SendParmInShader(int location, std::string nameBlock)
+{
+	int index_SLI = glGetUniformBlockIndex(location, nameBlock.c_str());
+	if (index_SLI != GL_INVALID_INDEX)
+	{
+		int blockSize;
+		glGetActiveUniformBlockiv(location, index_SLI, GL_UNIFORM_BLOCK_DATA_SIZE, &blockSize);
+		unsigned char* blockBuffer = new unsigned char[blockSize];
+		std::string names[5] = { nameBlock + ".position_lgh", nameBlock + ".intensity_lgh", nameBlock + ".direction_lgh", nameBlock + ".exponent_lgh", nameBlock + ".cutoff_lgh" };
+		const char* names_char[5] = { (names[0]).c_str(), (names[1]).c_str(), (names[2]).c_str(), (names[3]).c_str(), (names[4]).c_str() };
+		GLuint* indices = new GLuint[5];
+		glGetUniformIndices(location, 5, names_char, indices);
+		int* offset = new int[5];
+		glGetActiveUniformsiv(location, 5, indices, GL_UNIFORM_OFFSET, offset);
+	}
+}
