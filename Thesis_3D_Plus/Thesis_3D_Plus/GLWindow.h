@@ -22,6 +22,7 @@
 #include <cstring>
 #include <fstream>
 #include <ctime>
+#include <algorithm>
 
 #define GLEW_STATIC 1
 #include <GL\glew.h>
@@ -51,7 +52,7 @@ class GLWindow : public Fl_Gl_Window
 
 	  int Fl_width;
 	  int Fl_height;
-	  int _program_contour, _program, _program_some_light;
+	  int _program_contour, _program, _program_some_light, _program_Fong_directed;
 	  int _SelectID = -1;
 	  Camera camera1 = Camera();
 	  int width, height;

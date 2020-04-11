@@ -5,13 +5,13 @@ in vec3 tnorm;
 in vec4 frag_LightPosition;
 
 layout(location = 23) uniform vec4 CamerPosition;
-layout (binding = 24) uniform SpotLightInfo{
-	vec4 position_lgh; 	//Позиция в видимых координатах
-	vec3 intensity_lgh;	//Интесивность фонового, рассеянного и зеркального компонентов
-	vec3 direction_lgh;	//Нормализованный вектор направения света
-	float exponent_lgh; //Экспонента углового ослабления 
-	float cutoff_lgh; 	//угол отсечки
-}SLI;
+layout(binding = 24) uniform SpotLightInfo{
+	vec4 position_lgh;
+	vec3 intensity_lgh;
+	vec3 direction_lgh;
+	float exponent_lgh;
+	float cutoff_lgh;
+} SLI;
 
 out vec4 color;
 

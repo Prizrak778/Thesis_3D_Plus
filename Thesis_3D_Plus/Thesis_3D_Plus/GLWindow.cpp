@@ -60,7 +60,7 @@ int GLWindow::CompileAllShaders()
 	FragentShader = ".\\Components\\Shaders\\fragmentShader.frag";
 	if ((_program = CompileShaders(VertexShader, FragentShader)) == -1)
 	{
-		std::cout << "P.S. with double reflection shader failed" << std::endl;
+		std::cout << "P.S. with flat shadow shader failed" << std::endl;
 		return -1;
 	}
 	ProgramShaders.push_back(_program);
@@ -104,6 +104,7 @@ int GLWindow::CompileAllShaders()
 		std::cout << "Fong model directed shader failed" << std::endl;
 		return -1;
 	}
+	_program_Fong_directed = _program;
 	ProgramShaders.push_back(_program);
 	_program = ProgramShaders[0];
 	VertexShader.clear();
@@ -289,17 +290,17 @@ int GLWindow::InitializeGL()
 	}
 	position_obj = glm::vec3(-1.0, 2.0, 0.0);
 	new_coord_obj = CreateSolidCube(0.5, position_obj);
-	LightObject new_light = LightObject(new_coord_obj, glm::vec4(0.3f, 0.3f, 0.0f, 1), RandomColor(), position_obj, glm::vec4(5.0f, 5.0f, 1.0f, 1.0f), glm::vec3(0.2f, 0.2f, 5.0f), glm::vec3(0.3f, 0.3f, 0.0f), glm::vec3(1.0f, 0.0f, 5.0f));
+	LightObject new_light = LightObject(new_coord_obj, glm::vec4(0.3f, 0.3f, 0.0f, 1), RandomColor(), position_obj, glm::vec4(5.0f, 5.0f, 1.0f, 1.0f), glm::vec3(0.2f, -1.0f, -0.3f), glm::vec3(0.3f, 0.3f, 0.0f), glm::vec3(1.0f, 0.0f, 5.0f), _program_Fong_directed);
 	_lightObjects.push_back(new_light);
 	_renderObjects.push_back(new_light.LightRenderObject);
 	position_obj = glm::vec3(-1.0, 3.0, 0.0);
 	new_coord_obj = CreateSolidCube(0.5, position_obj);
-	LightObject new_light1 = LightObject(new_coord_obj, glm::vec4(0.0f, 0.3f, 0.3f, 1), RandomColor(), position_obj, glm::vec4(5.0f, 5.0f, 1.0f, 1.0f), glm::vec3(0.2f, 0.2f, 5.0f), glm::vec3(0.0f, 0.3f, 0.3f), glm::vec3(1.0f, 0.0f, 5.0f));
+	LightObject new_light1 = LightObject(new_coord_obj, glm::vec4(0.0f, 0.3f, 0.3f, 1), RandomColor(), position_obj, glm::vec4(5.0f, 5.0f, 1.0f, 1.0f), glm::vec3(0.2f, -1.0f, -0.3f), glm::vec3(0.0f, 0.3f, 0.3f), glm::vec3(1.0f, 0.0f, 5.0f));
 	_lightObjects.push_back(new_light1);
 	_renderObjects.push_back(new_light1.LightRenderObject);
 	position_obj = glm::vec3(-1.0, 4.0, 0.0);
 	new_coord_obj = CreateSolidCube(0.5, position_obj);
-	LightObject new_light2 = LightObject(new_coord_obj, glm::vec4(0.3f, 0.0f, 0.3f, 1), RandomColor(), position_obj, glm::vec4(5.0f, 5.0f, 1.0f, 1.0f), glm::vec3(0.2f, 0.2f, 5.0f), glm::vec3(0.3f, 0.0f, 0.3f), glm::vec3(1.0f, 0.0f, 5.0f));
+	LightObject new_light2 = LightObject(new_coord_obj, glm::vec4(0.3f, 0.0f, 0.3f, 1), RandomColor(), position_obj, glm::vec4(5.0f, 5.0f, 1.0f, 1.0f), glm::vec3(0.2f, -1.0f, -0.3f), glm::vec3(0.3f, 0.0f, 0.3f), glm::vec3(1.0f, 0.0f, 5.0f));
 	_lightObjects.push_back(new_light2);
 	_renderObjects.push_back(new_light2.LightRenderObject);
 	new_coord_obj.clear();
@@ -375,19 +376,24 @@ void GLWindow::draw()
 		glUseProgram(_program);
 		Render_figure(_renderObjects[i], GL_FILL);
 		glUniform4fv(19, 1, glm::value_ptr(_renderObjects[i].color_obj));
-		for(int j = 0; j < _lightObjects.size(); j++)//Кривое решение
+		
+		if (_program == _program_some_light)
 		{
-			if (_program != _program_some_light)
-			{
-				_lightObjects[j].PositionLightUniform(18);
-				_lightObjects[j].SendParmInShader(24);
-				j = _lightObjects.size();
-			}
-			else
+			for (int j = 0; j < _lightObjects.size(); j++)//Кривое решение
 			{
 				_lightObjects[j].PositionLightUniform(16 + j);
 				_lightObjects[j].IntensityLightUniform(13 + j);
 			}
+		}
+		else if (_program == _program_Fong_directed)
+		{
+			const GLuint bufferIndex = _lightObjects[0].uboHandle;
+			const GLsizeiptr blocksize = _lightObjects[0].blockSize;
+			if (_lightObjects[0].uboHandle != -1) glBindBufferRange(GL_UNIFORM_BUFFER, 24, bufferIndex, 0, blocksize);
+		}
+		else
+		{
+			_lightObjects[0].PositionLightUniform(18);
 		}
 		_renderObjects[i].Render();
 		
