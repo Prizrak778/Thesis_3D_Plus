@@ -48,7 +48,7 @@ class GLWindow : public Fl_Gl_Window
 	  GLuint CompileShaders(std::string VertexString, std::string FragmentString, std::string GeometricString = "");
 	  virtual int handle(int);
       virtual void draw();
-	  void findRenderObject(std::vector<LightObject> *light_obj, RenderObject render_obj);
+	  void UpdateLightRenderObject(std::vector<LightObject> *light_obj, RenderObject render_obj);
 
 	  int Fl_width;
 	  int Fl_height;

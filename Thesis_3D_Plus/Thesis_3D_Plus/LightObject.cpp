@@ -82,3 +82,46 @@ void LightObject::InitBufferForBlock(int program, std::string nameBlock)
 		glBufferData(GL_UNIFORM_BUFFER, blockSize, blockBuffer, GL_DYNAMIC_DRAW);
 	}
 }
+
+void LightObject::UpdatePositionForBlock()
+{
+	glm::vec4 position_v4 = glm::vec4(LightRenderObject.position_obj, 1);
+	position_v4 = LightRenderObject.ModelMatrix * position_v4;
+	glBindBuffer(GL_UNIFORM_BUFFER, uboHandle);
+	glBufferSubData(GL_UNIFORM_BUFFER, 0, sizeof(float) * 4, glm::value_ptr(position_v4));
+}
+
+void LightObject::UpdateBufferForBlock(int program)
+{
+	UpdateBufferForBlock(program, "SpotLightInfo");
+}
+void LightObject::UpdateBufferForBlock(int program, std::string nameBlock)
+{
+	int index_SLI = glGetUniformBlockIndex(program, nameBlock.c_str());
+	if (index_SLI != -1)
+	{
+		glGetActiveUniformBlockiv(program, index_SLI, GL_UNIFORM_BLOCK_DATA_SIZE, &blockSize);
+		unsigned char* blockBuffer = new unsigned char[blockSize];
+		std::string names[5] = { nameBlock + ".position_lgh", nameBlock + ".intensity_lgh", nameBlock + ".direction_lgh", nameBlock + ".exponent_lgh", nameBlock + ".cutoff_lgh" };
+		const char* names_char[5] = { (names[0]).c_str(), (names[1]).c_str(), (names[2]).c_str(), (names[3]).c_str(), (names[4]).c_str() };
+		GLuint* indices = new GLuint[5];
+		glGetUniformIndices(program, 5, names_char, indices);
+		int* offset = new int[5];
+		glGetActiveUniformsiv(program, 5, indices, GL_UNIFORM_OFFSET, offset);
+
+		float position_lgh[] = { LightRenderObject.position_obj.x, LightRenderObject.position_obj.y, LightRenderObject.position_obj.z, 0.0f };
+		float intensity_lgh[] = { AmbientIntensity.x, AmbientIntensity.y, AmbientIntensity.z }; //интенсивность света
+		float direction_lgh[] = { LightVecNormalized.x, LightVecNormalized.y, LightVecNormalized.z }; //направление света
+		float exponent[] = { 1.0f }; // Экспанента углового ослабления света
+		float cutoff[] = { 30.0f }; //угол отсечения
+
+		memcpy(blockBuffer + offset[0], position_lgh, sizeof(float) * 4);
+		memcpy(blockBuffer + offset[1], intensity_lgh, sizeof(float) * 3);
+		memcpy(blockBuffer + offset[2], direction_lgh, sizeof(float) * 3);
+		memcpy(blockBuffer + offset[3], exponent, sizeof(float));
+		memcpy(blockBuffer + offset[4], cutoff, sizeof(float));
+
+		glBindBuffer(GL_UNIFORM_BUFFER, uboHandle);
+		glBufferSubData(GL_UNIFORM_BUFFER, 0, blockSize, blockBuffer);
+	}
+}

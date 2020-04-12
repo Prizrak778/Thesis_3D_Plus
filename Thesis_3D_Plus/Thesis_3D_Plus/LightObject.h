@@ -21,6 +21,9 @@ public:
 	void PositionLightUniform(int location);
 	void MatrixViewUnifomr(int location);
 	void IntensityLightUniform(int location);
-	void InitBufferForBlock(int location);
-	void InitBufferForBlock(int location, std::string nameBlock);
+	void InitBufferForBlock(int program);
+	void InitBufferForBlock(int program, std::string nameBlock);
+	void UpdatePositionForBlock();
+	void UpdateBufferForBlock(int program);
+	void UpdateBufferForBlock(int program, std::string nameBlock);
 };

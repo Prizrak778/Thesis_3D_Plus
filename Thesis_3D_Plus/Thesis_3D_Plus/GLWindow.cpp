@@ -389,6 +389,7 @@ void GLWindow::draw()
 		{
 			const GLuint bufferIndex = _lightObjects[0].uboHandle;
 			const GLsizeiptr blocksize = _lightObjects[0].blockSize;
+			
 			if (_lightObjects[0].uboHandle != -1) glBindBufferRange(GL_UNIFORM_BUFFER, 24, bufferIndex, 0, blocksize);
 		}
 		else
@@ -406,13 +407,15 @@ void GLWindow::draw()
 	
 }
 
-void GLWindow::findRenderObject(std::vector<LightObject> *light_obj, RenderObject render_obj)
+void GLWindow::UpdateLightRenderObject(std::vector<LightObject> *light_obj, RenderObject render_obj)
 {
 	for (std::vector<LightObject>::iterator it = (*light_obj).begin(); it != (*light_obj).end(); it++)
 	{
 		if ((*it).LightRenderObject.color_choice == render_obj.color_choice)
 		{
 			(*it).LightRenderObject = render_obj;
+			if((*it).uboHandle != -1) (*it).UpdatePositionForBlock();
+			break;
 		}
 	}
 }
@@ -503,32 +506,21 @@ int GLWindow::handle(int event) {
 				{
 					case '8':
 						_renderObjects[_SelectID].changeModelMstrix(glm::vec3(0.25, 0, 0));
-
 						break;
 					case '6':
-
 						_renderObjects[_SelectID].changeModelMstrix(glm::vec3(0, 0, 0.25));
-
 						break;
 					case '4':
-
 						_renderObjects[_SelectID].changeModelMstrix(glm::vec3(0, 0, -0.25));
-
 						break;
 					case '2':
-
 						_renderObjects[_SelectID].changeModelMstrix(glm::vec3(-0.25, 0, 0));
-
 						break;
 					case '7':
-
 						_renderObjects[_SelectID].changeModelMstrix(glm::vec3(0, -0.25, 0));
-
 						break;
 					case '9':
-
 						_renderObjects[_SelectID].changeModelMstrix(glm::vec3(0, 0.25, 0));
-
 						break;
 					default:
 						not_default_key = false;
@@ -536,7 +528,7 @@ int GLWindow::handle(int event) {
 				}
 				if (not_default_key && _renderObjects[_SelectID].TybeObject == LightSourceObject)
 				{
-					findRenderObject(&_lightObjects, _renderObjects[_SelectID]);
+					UpdateLightRenderObject(&_lightObjects, _renderObjects[_SelectID]);
 				}
 			}
 			redraw();
