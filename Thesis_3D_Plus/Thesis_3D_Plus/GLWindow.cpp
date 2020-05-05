@@ -288,6 +288,11 @@ int GLWindow::InitializeGL()
 		_renderObjects.push_back(new_obj);
 		new_coord_obj.clear();
 	}
+	position_obj = glm::vec3(-4.0, 2.0, 0.0);
+	new_coord_obj = CreateSphere(3, position_obj, 1000, 1000, 1, 1);
+	new_obj = RenderObject(new_coord_obj, position_obj, glm::vec4(1.0f, 0.5f, 0.5f, 1), RandomColor());
+	_renderObjects.push_back(new_obj);
+	new_coord_obj.clear();
 	position_obj = glm::vec3(-1.0, 2.0, 0.0);
 	new_coord_obj = CreateSolidCube(0.5, position_obj);
 	LightObject new_light = LightObject(new_coord_obj, glm::vec4(0.3f, 0.3f, 0.0f, 1), RandomColor(), position_obj, glm::vec4(5.0f, 5.0f, 1.0f, 1.0f), glm::vec3(0.2f, -1.0f, -0.3f), glm::vec3(0.3f, 0.3f, 0.0f), glm::vec3(1.0f, 0.0f, 5.0f), _program_Fong_directed);
